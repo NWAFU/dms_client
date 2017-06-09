@@ -3,7 +3,6 @@
 
 #include <string>
 #include <list>
-#include <fstream>
 #include "data.h"
 
 using namespace std;
