@@ -1,0 +1,4 @@
+#ifndef CLIENT_EXCEPTION_H
+#define CLIENT_EXCEPTION_H
+
+#endif // CLIENT_EXCEPTION_H
