@@ -7,7 +7,7 @@ private:
     LogReader& log_reader;
     Logsender& log_sender;
 public:
-    Client(LogReader& log_reader, LogSender &log_sender);
+    Client(LogReader& log_reader, LogSender & log_sender);
     void dataMine();
 };
 
