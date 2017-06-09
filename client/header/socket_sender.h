@@ -16,6 +16,7 @@ private:
     void sendData(list<MatchedLogRec> & matched_log);
     void saveUnsendedFile(liste<MatchedLogRec> & matched_log);
 public:
+    ~SocketSender();
     void sendLog(list<MatchedLogRec> & matched_log);
 };
 
