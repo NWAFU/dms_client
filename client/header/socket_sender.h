@@ -7,6 +7,7 @@ class SocketSender:public LogSender
 {
 private:
     int socket_fd;
+    int connent_fd;
     string server_ip;
     short server_port;
     string unsended_file;
@@ -16,6 +17,7 @@ private:
     void sendData(list<MatchedLogRec> & matched_log);
     void saveUnsendedFile(liste<MatchedLogRec> & matched_log);
 public:
+    SocketSender();
     ~SocketSender();
     void sendLog(list<MatchedLogRec> & matched_log);
 };
