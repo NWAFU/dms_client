@@ -15,7 +15,7 @@ using namespace std::endl;
 *作者：Liu Huisen
 *日期：
 *函数名：connectServer
-*功能：create a connection to server.
+*功能：Create a connection to server.
 *输入参数：none
 *输出参数：none
 *返回值：none

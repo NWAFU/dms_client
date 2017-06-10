@@ -11,7 +11,8 @@ SOURCES += src/main.cpp \
     src/read_exception.cpp \
     src/socket_exception.cpp \
     src/save_exception.cpp \
-    src/send_exception.cpp
+    src/send_exception.cpp \
+    src/log_sender.cpp
 HEADERS += header/client_exception.h \
     header/client.h \
     header/data.h \

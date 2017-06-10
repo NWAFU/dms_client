@@ -6,7 +6,8 @@ class LogSender
 private:
 public:
     LogSender();
-    virtual void sendLog(list<MatchedLogRec> & matched_log);
+    ~LogSender();
+    virtual void sendLog(list<MatchedLogRec> & matched_log)=0;
 };
 
 #endif // LOG_SENDER_H
