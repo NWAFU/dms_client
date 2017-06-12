@@ -8,6 +8,6 @@ class BackupException:public ClientException
 {
 public:
     BackupException();
-    BackupException(const string& msg);
+    BackupException(const std::string& msg);
 };
 #endif // BACKUP_EXCEPTION_H

@@ -1,13 +1,11 @@
 #include "header/client_exception.h"
 
-using namespace std;
-
 ClientException::ClientException()
 {
     this -> msg = "客户机异常!";
 }
 
-ClientException::ClientException(const string& msg)
+ClientException::ClientException(const std::string& msg)
 {
     this -> msg = "客户端异常————";
     this -> msg += msg;

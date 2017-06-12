@@ -8,10 +8,10 @@
 class ClientException:public exception
 {
 private:
-    string msg;
+    std::string msg;
 public:
     ClientException();
-    ClientException(const string& msg);
+    ClientException(const std::string& msg);
     ~ClientException() throw();
     const char* whatMsg();
 };
