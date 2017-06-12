@@ -8,7 +8,7 @@ class ReadException:public ClientException
 {
 public:
     ReadException();
-    ReadException(const string& msg);
+    ReadException(const std::string& msg);
 };
 
 #endif // READ_EXCEPTION_H
