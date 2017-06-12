@@ -1,8 +1,8 @@
 #ifndef LOG_SENDER_H
 #define LOG_SENDER_H
 
+#include "header/data.h"
 #include <list>
-#include <header/data.h>
 
 using std::list;
 

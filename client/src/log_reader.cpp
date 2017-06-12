@@ -50,7 +50,6 @@ void LogReader::readBackupFile()
         return;
     }
 
-}
 void LogReader::readUnmatchedFile()
 {
 

@@ -3,6 +3,8 @@
 #include "header/log_reader.h"
 #include "header/log_sender.h"
 
+#include "header/log_reader.h"
+#include "header/log_sender.h"
 class Client
 {
 private:

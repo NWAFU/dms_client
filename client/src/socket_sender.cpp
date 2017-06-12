@@ -1,12 +1,13 @@
 #include "header/socket_sender.h"
-#include <linux/socket.h>//socket()
-#include <iostream>
-#include <netinet/in.h>//sockaddr_in
+#include "header/data.h"
+//#include <linux/socket.h>//socket()
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <iostream>
+#include <netinet/in.h>//sockaddr_in
 #include <arpa/inet.h>
-#include <unistd.h>
 #include <string.h>
+#include <fstream>
 
 #define __DEFINED__ 1
 #define __DEBUG__ __DEFINED__
@@ -15,6 +16,22 @@
 
 using std::cout;
 using std::endl;
+using std::ifstream;
+using std::ofstream;
+using std::ios;
+
+SocketSender::SocketSender()
+{
+    this->server_ip=SERVER_IP_ADDRESS;
+    this->server_port=SERVER_PORT;
+    this->unsended_file="unsended_matched_log.txt";
+}
+
+SocketSender::~SocketSender()
+{
+    close(this->socket_fd);
+    close(this->connent_fd);
+}
 
 /**************************************************
 *作者：Liu Huisen
@@ -27,7 +44,8 @@ using std::endl;
 **************************************************/
 void SocketSender::connectServer()
 {
-    socket_fd=socket(AF_INET,SOCK_STREAM,0);//create a socket
+    //create a socket for client
+    socket_fd=socket(AF_INET,SOCK_STREAM,0);
     if (socket_fd<0)
     {
 #ifdef __DEBUG__
@@ -42,12 +60,14 @@ void SocketSender::connectServer()
 #endif
     }
 
+    //server sockaddr info.
     sockaddr_in server_sockaddr;
     memset(&server_sockaddr,0,sizeof(sockaddr_in));
     server_sockaddr.sin_family=AF_INET;
     server_sockaddr.sin_addr.s_addr=inet_addr(SERVER_IP_ADDRESS);
     server_sockaddr.sin_port=htons(SERVER_PORT);
 
+    //create a connection request to server.
     int connet_fd=connect(socket_fd,(struct sockaddr *)&server_sockaddr,sizeof(struct sockaddr));
     if (connet_fd<0)
     {
@@ -62,4 +82,108 @@ void SocketSender::connectServer()
         cout<<"ok:client connect to server."<<endl;
 #endif
     }
+}
+
+/**************************************************
+*作者：Liu Huisen
+*日期：
+*函数名：readUnsendedFile
+*功能：Read the file storing log records fialing to
+*     be sended.
+*输入参数：matched_log
+*输出参数：none
+*返回值：none
+**************************************************/
+void SocketSender::readUnsendedFile(list<MatchedLogRec> & matched_log)
+{
+    //open the file storing unsended matched log.
+    ifstream fin("unsended_matched_log.txt",ios::in);
+    if (fin.fail())
+    {
+#ifdef __DEBUG__
+        cout<<"error:socket sender open file!"<<endl;
+#endif
+        return;
+    }
+    else
+    {
+#ifdef __DEBUG__
+        cout<<"ok:socket sender open file."<<endl;
+#endif
+    }
+
+    //read the matched log and insert into the matched_log list.
+    MatchedLogRec log;
+    /*
+    while (fin>>log)
+    {
+        matched_log.push_front(log);
+    }
+    */
+
+    //close the file.
+    fin.close();
+}
+
+/**************************************************
+*作者：Liu Huisen
+*日期：
+*函数名：sendData
+*功能：Send matched log to server though socket connection.
+*输入参数：matched_log
+*输出参数：none
+*返回值：none
+**************************************************/
+void SocketSender::sendData(list<MatchedLogRec> & matched_log)
+{
+    while (!matched_log.empty())
+    {
+
+    }
+}
+
+/**************************************************
+*作者：Liu Huisen
+*日期：
+*函数名：saveUnsendedFile
+*功能：Save log record failing to be sended into file.
+*输入参数：matched_log
+*输出参数：none
+*返回值：none
+**************************************************/
+void SocketSender::saveUnsendedFile(list<MatchedLogRec> & matched_log)
+{
+    ofstream fout("unsended_matched_log.txt",ios::out);
+    if (fout.fail())
+    {
+#ifdef __DEBUG__
+        cout<<"error:socket sender open file!"<<endl;
+#endif
+        return;
+    }
+    /*
+    while (!matched_log.empty())
+    {
+        fout<<matched_log.front();
+        matched_log.pop_front();
+    }
+    */
+    fout.close();
+}
+
+/**************************************************
+*作者：Liu Huisen
+*日期：
+*函数名：sendLog
+*功能：Send log to server.
+*输入参数：matched_log
+*输出参数：none
+*返回值：none
+**************************************************/
+void SocketSender::sendLog(list<MatchedLogRec> & matched_log)
+{
+    connectServer();
+    readUnsendedFile(matched_log);
+    sendData(matched_log);
+    saveUnsendedFile(matched_log);
 }
