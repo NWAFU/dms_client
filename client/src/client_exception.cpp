@@ -1,6 +1,6 @@
 #include "header/client_exception.h"
 
-using namespace std;
+using std::string;
 
 ClientException::ClientException()
 {

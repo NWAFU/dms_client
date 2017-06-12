@@ -3,6 +3,8 @@
 
 #include "client_exception.h"
 
+using std::string;
+
 //5.保存异常
 class SaveException:public ClientException
 {

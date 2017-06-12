@@ -1,6 +1,6 @@
 #include "header/save_exception.h"
 
-using namespace std;
+using std::string;
 
 SaveException::SaveException()
 {
@@ -9,5 +9,4 @@ SaveException::SaveException()
 
 SaveException::SaveException(const string &msg):ClientException(msg)
 {
-
 }

@@ -1,6 +1,6 @@
 #include "header/read_exception.h"
 
-using namespace std;
+using std::string;
 
 ReadException::ReadException()
 {
@@ -9,5 +9,4 @@ ReadException::ReadException()
 
 ReadException::ReadException(const string &msg):ClientException(msg)
 {
-
 }

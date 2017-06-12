@@ -1,6 +1,6 @@
 #include "header/backup_exception.h"
 
-using namespace std;
+using std::string;
 
 BackupException::BackupException()
 {
@@ -9,5 +9,4 @@ BackupException::BackupException()
 
 BackupException::BackupException(const string &msg):ClientException(msg)
 {
-
 }

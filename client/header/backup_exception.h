@@ -3,6 +3,8 @@
 
 #include "client_exception.h"
 
+using std::string;
+
 //1.备份异常
 class BackupException:public ClientException
 {

@@ -1,6 +1,6 @@
 #include "header/socket_exception.h"
 
-using namespace std;
+using std::string;
 
 SocketException::SocketException()
 {
@@ -9,6 +9,5 @@ SocketException::SocketException()
 
 SocketException::SocketException(const string &msg):ClientException(msg)
 {
-
 }
 

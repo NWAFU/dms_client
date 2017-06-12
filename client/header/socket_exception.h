@@ -3,6 +3,8 @@
 
 #include "client_exception.h"
 
+using std::string;
+
 //3.套接字异常
 class SocketException:public ClientException
 {

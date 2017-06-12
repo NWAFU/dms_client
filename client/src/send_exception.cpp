@@ -1,6 +1,6 @@
 #include "header/send_exception.h"
 
-using namespace std;
+using std::string;
 
 SendException::SendException()
 {
@@ -9,5 +9,4 @@ SendException::SendException()
 
 SendException::SendException(const string &msg):ClientException(msg)
 {
-
 }

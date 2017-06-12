@@ -3,6 +3,8 @@
 
 #include "client_exception.h"
 
+using std::string;
+
 //4.发送异常
 class SendException:public ClientException
 {
@@ -11,4 +13,4 @@ public:
     SendException(const string& msg);
 };
 
-#endif // SEND_EXCEPTION_H
+#endif
