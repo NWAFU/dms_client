@@ -6,7 +6,7 @@
 #include <iostream>
 #include <netinet/in.h>//sockaddr_in
 #include <arpa/inet.h>
-#include <string.h>
+#include <string.h>//memset()
 #include <fstream>
 
 #define __DEFINED__ 1

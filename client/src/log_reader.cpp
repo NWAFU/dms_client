@@ -49,15 +49,18 @@ void LogReader::readBackupFile()
         cout<<"read backup file failed!"<<endl;
         return;
     }
+}
 
 void LogReader::readUnmatchedFile()
 {
 
 }
+
 void LogReader::match()
 {
 
 }
+
 void LogReader::saveUnmatchedLogin()
 {
 
