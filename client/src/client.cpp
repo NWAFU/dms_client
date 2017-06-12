@@ -4,7 +4,7 @@ Client::Client(LogReader & log_reader, LogSender & log_sender):log_reader(log_re
 {
 }
 
-void Client::dataMine()
-{
+//void Client::dataMine()
+//{
 
-}
+//}
