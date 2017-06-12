@@ -11,7 +11,7 @@ private:
     string msg;
 public:
     ClientException();
-    ClientException(const string& msg);
+    ClientException(const string & msg);
     ~ClientException() throw();
     const char* whatMsg();
 };

@@ -1,7 +1,10 @@
 #ifndef SOCKET_SENDER_H
 #define SOCKET_SENDER_H
 
-#include "log_sender.h"
+#include "header/log_sender.h"
+#include <string>
+
+using std::string;
 
 class SocketSender:public LogSender
 {
@@ -15,7 +18,7 @@ private:
     void connectServer();
     void readUnsendedFile(list<MatchedLogRec> & matched_log);
     void sendData(list<MatchedLogRec> & matched_log);
-    void saveUnsendedFile(liste<MatchedLogRec> & matched_log);
+    void saveUnsendedFile(list<MatchedLogRec> & matched_log);
 public:
     SocketSender();
     ~SocketSender();
