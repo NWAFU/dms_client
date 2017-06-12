@@ -8,7 +8,7 @@ class SendException:public ClientException
 {
 public:
     SendException();
-    SendException(const string& msg);
+    SendException(const std::string& msg);
 };
 
-#endif // SEND_EXCEPTION_H
+#endif

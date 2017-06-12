@@ -8,7 +8,7 @@ class SaveException:public ClientException
 {
 public:
     SaveException();
-    SaveException(const string& msg);
+    SaveException(const std::string& msg);
 };
 
 #endif // SAVE_EXCEPTION_H

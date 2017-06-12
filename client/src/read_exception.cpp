@@ -1,7 +1,5 @@
 #include "header/read_exception.h"
 
-using namespace std;
-
 ReadException::ReadException()
 {
     ClientException("读取时异常");
