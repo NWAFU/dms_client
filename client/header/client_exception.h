@@ -11,7 +11,7 @@ using std::exception;
 class ClientException:public exception
 {
 private:
-    std::string msg;
+    string msg;
 public:
     ClientException();
     ClientException(const string & msg);

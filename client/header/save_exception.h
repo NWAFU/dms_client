@@ -3,12 +3,14 @@
 
 #include "client_exception.h"
 
+using std::string;
+
 //5.保存异常
 class SaveException:public ClientException
 {
 public:
     SaveException();
-    SaveException(const std::string& msg);
+    SaveException(const string& msg);
 };
 
 #endif // SAVE_EXCEPTION_H

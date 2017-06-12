@@ -3,12 +3,14 @@
 
 #include "client_exception.h"
 
+using std::string;
+
 //2.读取异常
 class ReadException:public ClientException
 {
 public:
     ReadException();
-    ReadException(const std::string& msg);
+    ReadException(const string& msg);
 };
 
 #endif // READ_EXCEPTION_H
