@@ -4,6 +4,9 @@
 #include <exception>
 #include <string>
 
+using std::exception;
+using std::string;
+
 //0.客户端异常
 class ClientException:public exception
 {

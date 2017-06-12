@@ -2,14 +2,19 @@
 #include <linux/socket.h>//socket()
 #include <iostream>
 #include <netinet/in.h>//sockaddr_in
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include <unistd.h>
 #include <string.h>
 
+#define __DEFINED__ 1
 #define __DEBUG__ __DEFINED__
 #define SERVER_PORT 4096
 #define SERVER_IP_ADDRESS "127.0.0.1"
 
-using namespace std::out;
-using namespace std::endl;
+using std::cout;
+using std::endl;
 
 /**************************************************
 *作者：Liu Huisen
@@ -22,17 +27,17 @@ using namespace std::endl;
 **************************************************/
 void SocketSender::connectServer()
 {
-    socket_fd=socket(AF_FAMILY,SOCKET_STREAM,0);//create a socket
+    socket_fd=socket(AF_INET,SOCK_STREAM,0);//create a socket
     if (socket_fd<0)
     {
-#ifdef __DEBUG__ __DEFINED__
+#ifdef __DEBUG__
         cout<<"error:client create socket!"<<endl;
 #endif
-        return -1;
+        return;
     }
     else
     {
-#ifdef __DEBUG__ __DEFINED__
+#ifdef __DEBUG__
         cout<<"ok:client create socket."<<endl;
 #endif
     }
@@ -43,17 +48,17 @@ void SocketSender::connectServer()
     server_sockaddr.sin_addr.s_addr=inet_addr(SERVER_IP_ADDRESS);
     server_sockaddr.sin_port=htons(SERVER_PORT);
 
-    int connet_fd=connect(socket_fd,(struct sockaddr *)server_sockaddr,sizeof(struct sockaddr));
+    int connet_fd=connect(socket_fd,(struct sockaddr *)&server_sockaddr,sizeof(struct sockaddr));
     if (connet_fd<0)
     {
-#ifdef __DEBUG__ __DEFINED__
+#ifdef __DEBUG__
         cout<<"error:client connect to server!"<<endl;
 #endif
-        return -1;
+        return;
     }
     else
     {
-#ifdef __DEBUG__ __DEFINED__
+#ifdef __DEBUG__
         cout<<"ok:client connect to server."<<endl;
 #endif
     }

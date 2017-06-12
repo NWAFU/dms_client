@@ -1,4 +1,11 @@
-#include "/header/log_reader.h"
+#include "header/log_reader.h"
+#include <stdlib.h>
+#include <iostream>
+
+using std::cout;
+using std::endl;
+using std::ios;
+using std::ifstream;
 
 LogReader::LogReader()
 {
@@ -16,7 +23,7 @@ LogReader::~LogReader()
 
 }
 
-LogReader::backup()
+void LogReader::backup()
 {
 #ifdef _DEBUG
     cout << "backup start!......" << endl;
@@ -24,9 +31,9 @@ LogReader::backup()
     //code
     char cmd[] = "./backup.sh wtmpx wtmpx.20170612094000";
     int status = system(cmd);
-    int ret = WEXITATATUS(status);
-    if(ret == 1) throw client_exception("backup wrong!\n");
-    else if(ret == 2) throw client_exception("clear wrong!\n");
+    int ret = WEXITSTATUS(status);
+    if(ret == 1) cout<<"backup wrong!"<<endl;
+    else if(ret == 2) cout<<"clear wrong!"<<endl;
     printf("%d\n", ret);
 
 #ifdef _DEBUG
@@ -34,24 +41,37 @@ LogReader::backup()
 #endif
 }
 
-LogReader::readBackupFile()
+void LogReader::readBackupFile()
 {
-    ifstream fin(backup_file,ios::nocreate|ios::binary);
+    ifstream fin(backup_file.c_str(),ifstream::in);
     if (fin.fail())
     {
         cout<<"read backup file failed!"<<endl;
-        return -1;
+        return;
     }
 
 }
+void LogReader::readUnmatchedFile()
+{
 
-LogReader::readLogs()
+}
+void LogReader::match()
+{
+
+}
+void LogReader::saveUnmatchedLogin()
+{
+
+}
+
+list<MatchedLogRec>& LogReader::readLog()
 {
     backup();
     readUnmatchedFile();
     readBackupFile();
     match();
     saveUnmatchedLogin();
+    return matched_log_record;
 }
 
 
