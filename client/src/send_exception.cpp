@@ -5,7 +5,7 @@ SendException::SendException()
     ClientException("发送时异常");
 }
 
-SendException::SendException(const std::string &msg)
+SendException::SendException(const string &msg):ClientException(msg)
 {
-    ClientException(msg);
+
 }

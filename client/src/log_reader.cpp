@@ -1,4 +1,4 @@
-#include "/header/log_reader.h"
+#include "header/log_reader.h"
 
 LogReader::LogReader()
 {
@@ -16,13 +16,7 @@ LogReader::~LogReader()
 
 }
 
-LogReader::readBackupFile()
+void LogReader::readBackupFile()
 {
-    ifstream fin(backup_file,ios::nocreate|ios::binary);
-    if (fin.fail())
-    {
-        cout<<"read backup file failed!"<<endl;
-        return -1;
-    }
 
 }
