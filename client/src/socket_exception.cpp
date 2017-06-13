@@ -2,9 +2,8 @@
 
 using std::string;
 
-SocketException::SocketException()
+SocketException::SocketException():ClientException("套接字异常")
 {
-    ClientException("套接字异常");
 }
 
 SocketException::SocketException(const string &msg):ClientException(msg)

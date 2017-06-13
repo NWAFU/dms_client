@@ -1,4 +1,5 @@
 #include "header/client_exception.h"
+#include <iostream>
 
 using std::string;
 

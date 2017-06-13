@@ -2,9 +2,8 @@
 
 using std::string;
 
-ReadException::ReadException()
+ReadException::ReadException():ClientException("读取时异常")
 {
-    ClientException("读取时异常");
 }
 
 ReadException::ReadException(const string &msg):ClientException(msg)
