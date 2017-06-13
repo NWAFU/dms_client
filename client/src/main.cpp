@@ -1,11 +1,10 @@
 #include <iostream>
 #include "header/log_reader.h"
-using namespace std;
+#include "header/log_sender.h"
+
 
 int main()
 {
-    LogReader logRead;
-    logRead.backup();
     return 0;
 }
 
