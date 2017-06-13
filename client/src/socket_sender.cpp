@@ -18,7 +18,6 @@ using std::cout;
 using std::endl;
 using std::ifstream;
 using std::ofstream;
-using std::ios;
 
 SocketSender::SocketSender()
 {
@@ -29,8 +28,8 @@ SocketSender::SocketSender()
 
 SocketSender::~SocketSender()
 {
-    close(this->socket_fd);
-    close(this->connent_fd);
+    close(socket_fd);
+    close(connent_fd);
 }
 
 /**************************************************
@@ -64,8 +63,8 @@ void SocketSender::connectServer()
     sockaddr_in server_sockaddr;
     memset(&server_sockaddr,0,sizeof(sockaddr_in));
     server_sockaddr.sin_family=AF_INET;
-    server_sockaddr.sin_addr.s_addr=inet_addr(SERVER_IP_ADDRESS);
-    server_sockaddr.sin_port=htons(SERVER_PORT);
+    server_sockaddr.sin_addr.s_addr=inet_addr(server_ip.c_str());
+    server_sockaddr.sin_port=htons(server_port);
 
     //create a connection request to server.
     int connet_fd=connect(socket_fd,(struct sockaddr *)&server_sockaddr,sizeof(struct sockaddr));
@@ -97,7 +96,7 @@ void SocketSender::connectServer()
 void SocketSender::readUnsendedFile(list<MatchedLogRec> & matched_log)
 {
     //open the file storing unsended matched log.
-    ifstream fin("unsended_matched_log.txt",ios::in);
+    ifstream fin(unsended_file.c_str(),ifstream::in);
     if (fin.fail())
     {
 #ifdef __DEBUG__
@@ -115,11 +114,11 @@ void SocketSender::readUnsendedFile(list<MatchedLogRec> & matched_log)
     //read the matched log and insert into the matched_log list.
     MatchedLogRec log;
 
-    while (fin>>log)
+    while (!fin.eof())
     {
+        fin>>log;
         matched_log.push_front(log);
     }
-
 
     //close the file.
     fin.close();
@@ -171,7 +170,7 @@ void SocketSender::sendData(list<MatchedLogRec> & matched_log)
 **************************************************/
 void SocketSender::saveUnsendedFile(list<MatchedLogRec> & matched_log)
 {
-    ofstream fout("unsended_matched_log.txt",ios::out);
+    ofstream fout(unsended_file.c_str(),ofstream::out);
     if (fout.fail())
     {
 #ifdef __DEBUG__
