@@ -1,7 +1,7 @@
 #!/bin/bash
 if cp $1 $2
 then
-	if /dev/null -> $1	
+	if cat /dev/null > $1	
 	then
 		exit 0
 	else
