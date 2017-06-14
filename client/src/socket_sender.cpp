@@ -3,10 +3,10 @@
 //#include <linux/socket.h>//socket()
 #include <sys/types.h>
 #include <sys/socket.h>
-#include <iostream>
 #include <netinet/in.h>//sockaddr_in
 #include <arpa/inet.h>
-#include <string.h>
+#include <string.h>//memset()
+#include <iostream>
 #include <fstream>
 
 #define __DEFINED__ 1
@@ -18,7 +18,6 @@ using std::cout;
 using std::endl;
 using std::ifstream;
 using std::ofstream;
-using std::ios;
 
 SocketSender::SocketSender()
 {
@@ -29,13 +28,13 @@ SocketSender::SocketSender()
 
 SocketSender::~SocketSender()
 {
-    close(this->socket_fd);
-    close(this->connent_fd);
+    close(socket_fd);
+    close(connent_fd);
 }
 
 /**************************************************
 *作者：Liu Huisen
-*日期：
+*日期：2017.06.10
 *函数名：connectServer
 *功能：Create a connection to server.
 *输入参数：none
@@ -64,8 +63,8 @@ void SocketSender::connectServer()
     sockaddr_in server_sockaddr;
     memset(&server_sockaddr,0,sizeof(sockaddr_in));
     server_sockaddr.sin_family=AF_INET;
-    server_sockaddr.sin_addr.s_addr=inet_addr(SERVER_IP_ADDRESS);
-    server_sockaddr.sin_port=htons(SERVER_PORT);
+    server_sockaddr.sin_addr.s_addr=inet_addr(server_ip.c_str());
+    server_sockaddr.sin_port=htons(server_port);
 
     //create a connection request to server.
     int connet_fd=connect(socket_fd,(struct sockaddr *)&server_sockaddr,sizeof(struct sockaddr));
@@ -86,7 +85,7 @@ void SocketSender::connectServer()
 
 /**************************************************
 *作者：Liu Huisen
-*日期：
+*日期：2017.06.12
 *函数名：readUnsendedFile
 *功能：Read the file storing log records fialing to
 *     be sended.
@@ -97,7 +96,7 @@ void SocketSender::connectServer()
 void SocketSender::readUnsendedFile(list<MatchedLogRec> & matched_log)
 {
     //open the file storing unsended matched log.
-    ifstream fin("unsended_matched_log.txt",ios::in);
+    ifstream fin(unsended_file.c_str(),ifstream::in);
     if (fin.fail())
     {
 #ifdef __DEBUG__
@@ -114,12 +113,12 @@ void SocketSender::readUnsendedFile(list<MatchedLogRec> & matched_log)
 
     //read the matched log and insert into the matched_log list.
     MatchedLogRec log;
-    /*
-    while (fin>>log)
+
+    while (!fin.eof())
     {
+        fin>>log;
         matched_log.push_front(log);
     }
-    */
 
     //close the file.
     fin.close();
@@ -127,7 +126,7 @@ void SocketSender::readUnsendedFile(list<MatchedLogRec> & matched_log)
 
 /**************************************************
 *作者：Liu Huisen
-*日期：
+*日期：2017.06.13
 *函数名：sendData
 *功能：Send matched log to server though socket connection.
 *输入参数：matched_log
@@ -136,15 +135,33 @@ void SocketSender::readUnsendedFile(list<MatchedLogRec> & matched_log)
 **************************************************/
 void SocketSender::sendData(list<MatchedLogRec> & matched_log)
 {
+    MatchedLogRec log;
+    char send_buf[128];
+    int send_num;
     while (!matched_log.empty())
     {
-
+        log=matched_log.front();
+        sprintf(send_buf,"%s %d %ld %ld %ld %s\n",log.log_name,log.pid,log.login_time,log.logout_time,log.duration,log.log_ip);
+        send_num=send(socket_fd,send_buf,sizeof(send_buf),0);
+        if (send_num<0)
+        {
+#ifdef __DEBUG__
+            cout<<"error:client socket send failed!"<<endl;
+#endif
+            return;
+        }
+        else
+        {
+#ifdef __DEBUG__
+            cout<<"ok:client socket sended."<<endl;
+#endif
+        }
     }
 }
 
 /**************************************************
 *作者：Liu Huisen
-*日期：
+*日期：2017.06.12
 *函数名：saveUnsendedFile
 *功能：Save log record failing to be sended into file.
 *输入参数：matched_log
@@ -153,7 +170,7 @@ void SocketSender::sendData(list<MatchedLogRec> & matched_log)
 **************************************************/
 void SocketSender::saveUnsendedFile(list<MatchedLogRec> & matched_log)
 {
-    ofstream fout("unsended_matched_log.txt",ios::out);
+    ofstream fout(unsended_file.c_str(),ofstream::out);
     if (fout.fail())
     {
 #ifdef __DEBUG__
@@ -161,19 +178,19 @@ void SocketSender::saveUnsendedFile(list<MatchedLogRec> & matched_log)
 #endif
         return;
     }
-    /*
+
     while (!matched_log.empty())
     {
         fout<<matched_log.front();
         matched_log.pop_front();
     }
-    */
+
     fout.close();
 }
 
 /**************************************************
 *作者：Liu Huisen
-*日期：
+*日期：2017.06.12
 *函数名：sendLog
 *功能：Send log to server.
 *输入参数：matched_log

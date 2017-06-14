@@ -3,6 +3,8 @@
 
 #include "client_exception.h"
 
+using std::string;
+
 //2.读取异常
 class ReadException:public ClientException
 {

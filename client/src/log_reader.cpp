@@ -50,14 +50,17 @@ void LogReader::readBackupFile()
         return;
     }
 }
+
 void LogReader::readUnmatchedFile()
 {
 
 }
+
 void LogReader::match()
 {
 
 }
+
 void LogReader::saveUnmatchedLogin()
 {
 
