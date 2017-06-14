@@ -9,8 +9,12 @@
 #include <iostream>
 #include <fstream>
 
-#define __DEFINED__ 1
-#define __DEBUG__ __DEFINED__
+#include "header/read_exception.h"
+#include "header/save_exception.h"
+#include "header/socket_exception.h"
+#include "header/send_exception.h"
+
+#define __DEBUG__ 1
 #define SERVER_PORT 4096
 #define SERVER_IP_ADDRESS "127.0.0.1"
 
@@ -43,20 +47,28 @@ SocketSender::~SocketSender()
 **************************************************/
 void SocketSender::connectServer()
 {
-    //create a socket for client
-    socket_fd=socket(AF_INET,SOCK_STREAM,0);
-    if (socket_fd<0)
+    try
     {
+        //create a socket for client
+        socket_fd=socket(AF_INET,SOCK_STREAM,0);
+        if (socket_fd<0)
+        {
 #ifdef __DEBUG__
-        cout<<"error:client create socket!"<<endl;
+            cout<<"error:client create socket!"<<endl;
 #endif
-        return;
-    }
-    else
+            SocketException sock_e("Create socket failed!");
+            throw sock_e;
+            return;
+        }
+        else
+        {
+#ifdef __DEBUG__
+            cout<<"ok:client create socket."<<endl;
+#endif
+        }
+    } catch (exception const & e)
     {
-#ifdef __DEBUG__
-        cout<<"ok:client create socket."<<endl;
-#endif
+        e.what();
     }
 
     //server sockaddr info.
@@ -66,20 +78,28 @@ void SocketSender::connectServer()
     server_sockaddr.sin_addr.s_addr=inet_addr(server_ip.c_str());
     server_sockaddr.sin_port=htons(server_port);
 
-    //create a connection request to server.
-    int connet_fd=connect(socket_fd,(struct sockaddr *)&server_sockaddr,sizeof(struct sockaddr));
-    if (connet_fd<0)
+    try
     {
+        //create a connection request to server.
+        int connet_fd=connect(socket_fd,(struct sockaddr *)&server_sockaddr,sizeof(struct sockaddr));
+        if (connet_fd<0)
+        {
 #ifdef __DEBUG__
-        cout<<"error:client connect to server!"<<endl;
+            cout<<"error:client connect to server!"<<endl;
 #endif
-        return;
-    }
-    else
+            SocketException sock_e("Connect to server failed!");
+            throw sock_e;
+            return;
+        }
+        else
+        {
+#ifdef __DEBUG__
+            cout<<"ok:client connect to server."<<endl;
+#endif
+        }
+    } catch (exception const & e)
     {
-#ifdef __DEBUG__
-        cout<<"ok:client connect to server."<<endl;
-#endif
+        e.what();
     }
 }
 
@@ -95,33 +115,48 @@ void SocketSender::connectServer()
 **************************************************/
 void SocketSender::readUnsendedFile(list<MatchedLogRec> & matched_log)
 {
-    //open the file storing unsended matched log.
-    ifstream fin(unsended_file.c_str(),ifstream::in);
-    if (fin.fail())
+    try
     {
+        //open the file storing unsended matched log.
+        ifstream fin(unsended_file.c_str(),ifstream::in);
+        if (fin.fail())
+        {
 #ifdef __DEBUG__
-        cout<<"error:socket sender open file!"<<endl;
+            cout<<"error:socket sender open file!"<<endl;
 #endif
-        return;
-    }
-    else
-    {
+            SaveException read_e("Open file failed!");
+            throw read_e;
+            return;
+        }
+        else
+        {
 #ifdef __DEBUG__
-        cout<<"ok:socket sender open file."<<endl;
+            cout<<"ok:socket sender open file."<<endl;
 #endif
-    }
+        }
+        //read the matched log and insert into the matched_log list.
+        MatchedLogRec log;
+        while (!fin.eof())
+        {
+            fin>>log;
+            if (fin.fail())
+            {
+                if (!fin.eof())
+                {
+                    ReadException read_e("Read unsended log failed!");
+                    throw read_e;
+                    return;
+                }
+            }
+            matched_log.push_front(log);
+        }
 
-    //read the matched log and insert into the matched_log list.
-    MatchedLogRec log;
-
-    while (!fin.eof())
+        //close the file.
+        fin.close();
+    } catch (exception const & e)
     {
-        fin>>log;
-        matched_log.push_front(log);
+        e.what();
     }
-
-    //close the file.
-    fin.close();
 }
 
 /**************************************************
@@ -135,27 +170,33 @@ void SocketSender::readUnsendedFile(list<MatchedLogRec> & matched_log)
 **************************************************/
 void SocketSender::sendData(list<MatchedLogRec> & matched_log)
 {
-    MatchedLogRec log;
-    char send_buf[128];
-    int send_num;
-    while (!matched_log.empty())
+    try
     {
-        log=matched_log.front();
-        sprintf(send_buf,"%s %d %ld %ld %ld %s\n",log.log_name,log.pid,log.login_time,log.logout_time,log.duration,log.log_ip);
-        send_num=send(socket_fd,send_buf,sizeof(send_buf),0);
-        if (send_num<0)
+        MatchedLogRec log;
+        int send_num;
+        while (!matched_log.empty())
         {
+            log=matched_log.front();
+            send_num=send(socket_fd,(void *)&log,sizeof(log),0);
+            if (send_num<0)
+            {
 #ifdef __DEBUG__
-            cout<<"error:client socket send failed!"<<endl;
+                cout<<"error:client socket send failed!"<<endl;
 #endif
-            return;
-        }
-        else
-        {
+                SendException send_e("Send data to server failed!");
+                throw send_e;
+                return;
+            }
+            else
+            {
 #ifdef __DEBUG__
-            cout<<"ok:client socket sended."<<endl;
+                cout<<"ok:client socket sended."<<endl;
 #endif
+            }
         }
+    } catch (exception const & e)
+    {
+        e.what();
     }
 }
 
@@ -170,22 +211,36 @@ void SocketSender::sendData(list<MatchedLogRec> & matched_log)
 **************************************************/
 void SocketSender::saveUnsendedFile(list<MatchedLogRec> & matched_log)
 {
-    ofstream fout(unsended_file.c_str(),ofstream::out);
-    if (fout.fail())
+    try
     {
+        ofstream fout(unsended_file.c_str(),ofstream::out);
+        if (fout.fail())
+        {
 #ifdef __DEBUG__
-        cout<<"error:socket sender open file!"<<endl;
+            cout<<"error:socket sender open file!"<<endl;
 #endif
-        return;
-    }
+            SaveException save_e("Open file failed!");
+            throw save_e;
+            return;
+        }
 
-    while (!matched_log.empty())
+        while (!matched_log.empty())
+        {
+            fout<<matched_log.front();
+            if (fout.fail())
+            {
+                SaveException save_e("Write unsended log failed!");
+                throw save_e;
+                return;
+            }
+            matched_log.pop_front();
+        }
+
+        fout.close();
+    } catch (exception const & e)
     {
-        fout<<matched_log.front();
-        matched_log.pop_front();
+        e.what();
     }
-
-    fout.close();
 }
 
 /**************************************************
