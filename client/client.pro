@@ -12,7 +12,9 @@ SOURCES += src/main.cpp \
     src/socket_exception.cpp \
     src/save_exception.cpp \
     src/send_exception.cpp \
-    src/log_sender.cpp
+    src/log_sender.cpp \
+    src/data.cpp \
+    src/console_sender.cpp
 HEADERS += header/client_exception.h \
     header/client.h \
     header/data.h \
