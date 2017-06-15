@@ -3,9 +3,11 @@
 
 #include <unistd.h>//pid_t
 #include <fstream>//ofstream
+#include <iostream>//ostream
 
 using std::ifstream;
 using std::ofstream;
+using std::ostream;
 
 struct LogRec
 {
@@ -26,6 +28,7 @@ struct MatchedLogRec
     char log_ip[32];
     friend ifstream & operator>>(ifstream & fin,MatchedLogRec & matched_log);
     friend ofstream & operator<<(ofstream & fout,MatchedLogRec const & matched_log);
+    friend ostream & operator<<(ostream & out,MatchedLogRec const & matched_log);
 };
 
 #endif // DATA_H
