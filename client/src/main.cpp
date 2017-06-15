@@ -1,16 +1,12 @@
-#include <iostream>
-#include "header/log_reader.h"
-#include "header/read_exception.h"
+#include "header/socket_sender.h"
 
 using namespace std;
 
 int main()
 {
-    LogReader logRead;
-    logRead.backup();
-    cout << "hello, world!" << endl;
+    list<MatchedLogRec> matched_log;
+    SocketSender sock_sender;
+    sock_sender.sendLog(matched_log);
 
     return 0;
-
 }
-

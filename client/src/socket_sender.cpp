@@ -16,7 +16,7 @@
 
 #define __DEBUG__ 1
 #define SERVER_PORT 4096
-#define SERVER_IP_ADDRESS "127.0.0.1"
+#define SERVER_IP_ADDRESS "10.0.2.15"
 
 using std::cout;
 using std::endl;
@@ -174,10 +174,9 @@ void SocketSender::sendData(list<MatchedLogRec> & matched_log)
     {
         MatchedLogRec log;
         int send_num;
-        while (!matched_log.empty())
+        for (list<MatchedLogRec>::iterator it=matched_log.begin();it!=matched_log.end();it++)
         {
-            log=matched_log.front();
-            send_num=send(socket_fd,(void *)&log,sizeof(log),0);
+            send_num=send(socket_fd,(void *)&(*it),sizeof(log),0);
             if (send_num<0)
             {
 #ifdef __DEBUG__
@@ -224,18 +223,16 @@ void SocketSender::saveUnsendedFile(list<MatchedLogRec> & matched_log)
             return;
         }
 
-        while (!matched_log.empty())
+        for (list<MatchedLogRec>::const_iterator it=matched_log.begin();it!=matched_log.end();it++)
         {
-            fout<<matched_log.front();
+            fout<<*it<<endl;
             if (fout.fail())
             {
                 SaveException save_e("Write unsended log failed!");
                 throw save_e;
                 return;
             }
-            matched_log.pop_front();
         }
-
         fout.close();
     } catch (exception const & e)
     {
