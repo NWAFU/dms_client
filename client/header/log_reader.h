@@ -27,8 +27,8 @@ public:
     LogReader(string backup_file, string unmatched_login_file);
     ~LogReader();
     list<MatchedLogRec> & readLog();
-    void backup();
     void readBackupFile();                  //读取备份的日志文件，对读取到的数据进行提取，生成登入或登出日志记录，并把该记录存入到相应的集合中
+    void backup();
 };
 
 #endif // LOG_READER_H

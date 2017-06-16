@@ -4,9 +4,6 @@ using namespace std;
 
 int main()
 {
-    list<MatchedLogRec> matched_log;
-    SocketSender sock_sender;
-    sock_sender.sendLog(matched_log);
-
+    cout << "hello, world!" << endl;
     return 0;
 }
