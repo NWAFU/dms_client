@@ -69,7 +69,7 @@ void SocketSender::connectServer()
         }
     } catch (exception const & e)
     {
-        e.what();
+        cout<<e.what();
     }
 
     //server sockaddr info.
@@ -99,7 +99,7 @@ void SocketSender::connectServer()
         }
     } catch (exception const & e)
     {
-        e.what();
+        cout<<e.what();
     }
 }
 
@@ -176,7 +176,7 @@ void SocketSender::readUnsendedFile(list<MatchedLogRec> & matched_log)
         }
     } catch (exception const & e)
     {
-        e.what();
+        cout<<e.what();
     }
 }
 
@@ -216,7 +216,7 @@ void SocketSender::sendData(list<MatchedLogRec> & matched_log)
         }
     } catch (exception const & e)
     {
-        e.what();
+        cout<<e.what();
     }
 }
 
@@ -260,7 +260,7 @@ void SocketSender::saveUnsendedFile(list<MatchedLogRec> & matched_log)
         matched_log.clear();
     } catch (exception const & e)
     {
-        e.what();
+        cout<<e.what();
     }
 }
 
