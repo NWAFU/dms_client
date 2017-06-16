@@ -138,20 +138,27 @@ void SocketSender::readUnsendedFile(list<MatchedLogRec> & matched_log)
         while (!fin.eof())
         {
             fin>>log;
-            if (fin.fail()&&!fin.eof())
+            if (fin.fail())
             {
-                throw ReadException("Read unsended log failed!");
-                return;
+                if (!fin.eof())
+                {
+                    throw ReadException("Read unsended log failed!");
+                    return;
+                }
+                else
+                {
+                    break;
+                }
 
             }
-            matched_log.push_front(log);
+            matched_log.push_back(log);
         }
 
         //close the file.
         fin.close();
 
         //clean up the unsended log file.
-        char command[64]="../script/cleanup_file.sh ";
+        char command[64]="../client/script/cleanup_file.sh ";
         int cleanup=system(strcat(command,unsended_file.c_str()));
         if (cleanup<0)
         {
@@ -188,7 +195,7 @@ void SocketSender::sendData(list<MatchedLogRec> & matched_log)
     {
         MatchedLogRec log;
         int send_num;
-        for (list<MatchedLogRec>::iterator it=matched_log.begin();it!=matched_log.end();it++)
+        for (list<MatchedLogRec>::iterator it=matched_log.begin();it!=matched_log.end();)
         {
             send_num=send(socket_fd,(void *)&(*it),sizeof(log),0);
             if (send_num<0)
@@ -205,6 +212,7 @@ void SocketSender::sendData(list<MatchedLogRec> & matched_log)
                 cout<<"ok:client socket sended."<<endl;
 #endif
             }
+            it=matched_log.erase(it);
         }
     } catch (exception const & e)
     {
