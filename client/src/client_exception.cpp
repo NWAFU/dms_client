@@ -32,13 +32,13 @@ ClientException::~ClientException() throw(){}
 
 /**************************************************
 *作者：吴恒
-*函数名：const char* whatMsg()
+*函数名：const char* what()
 *功能：返回客户端异常类错误字符串msg
 *输入参数：none
 *输出参数：none
 *返回值：const char*
 **************************************************/
-const char* ClientException::whatMsg()
+const char* ClientException::what()
 {
     return this -> msg.c_str();
 }
