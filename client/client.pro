@@ -29,4 +29,5 @@ HEADERS += header/client_exception.h \
     header/send_exception.h
 
 OTHER_FILES += \
-    script/backup.sh
+    script/backup.sh \
+    script/cleanup_file.sh
