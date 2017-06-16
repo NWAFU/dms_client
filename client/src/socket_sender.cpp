@@ -141,7 +141,7 @@ void SocketSender::sendData(list<MatchedLogRec> & matched_log)
     while (!matched_log.empty())
     {
         log=matched_log.front();
-        sprintf(send_buf,"%s %d %ld %ld %ld %s\n",log.log_name,log.pid,log.login_time,log.logout_time,log.duration,log.log_ip);
+        sprintf(send_buf,"%s %d %d %d %d %s\n",log.log_name,log.pid,log.login_time,log.logout_time,log.duration,log.log_ip);
         send_num=send(socket_fd,send_buf,sizeof(send_buf),0);
         if (send_num<0)
         {

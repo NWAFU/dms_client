@@ -1,5 +1,6 @@
 #!/bin/bash
-if cp $1 $2
+
+if cp $1 $1.$(date "+%Y%m%d%H%M%S")
 then
 	if cat /dev/null > $1	
 	then
