@@ -18,7 +18,7 @@
 
 #define __DEBUG__ 1
 #define SERVER_PORT 4096
-#define SERVER_IP_ADDRESS "10.0.2.15"
+#define SERVER_IP_ADDRESS "127.0.0.1"
 
 using std::cout;
 using std::endl;
@@ -151,7 +151,7 @@ void SocketSender::readUnsendedFile(list<MatchedLogRec> & matched_log)
         fin.close();
 
         //clean up the unsended log file.
-        char command[64]="./../script/cleanup_file.sh ";
+        char command[64]="./../client/script/cleanup_file.sh ";
         int cleanup=system(strcat(command,unsended_file.c_str()));
         if (cleanup<0)
         {
