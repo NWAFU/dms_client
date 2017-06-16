@@ -27,3 +27,7 @@ HEADERS += header/client_exception.h \
     header/socket_exception.h \
     header/save_exception.h \
     header/send_exception.h
+
+OTHER_FILES += \
+    script/backup.sh \
+    script/cleanup_file.sh

@@ -1,11 +1,13 @@
 #include "header/socket_sender.h"
 #include "header/data.h"
+
 //#include <linux/socket.h>//socket()
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>//sockaddr_in
 #include <arpa/inet.h>
 #include <string.h>//memset()
+#include <stdlib.h>//system()
 #include <iostream>
 #include <fstream>
 
@@ -49,15 +51,14 @@ void SocketSender::connectServer()
 {
     try
     {
-        //create a socket for client
+        //create a socket for client.
         socket_fd=socket(AF_INET,SOCK_STREAM,0);
         if (socket_fd<0)
         {
 #ifdef __DEBUG__
             cout<<"error:client create socket!"<<endl;
 #endif
-            SocketException sock_e("Create socket failed!");
-            throw sock_e;
+            throw SocketException("Create socket failed!");
             return;
         }
         else
@@ -87,8 +88,7 @@ void SocketSender::connectServer()
 #ifdef __DEBUG__
             cout<<"error:client connect to server!"<<endl;
 #endif
-            SocketException sock_e("Connect to server failed!");
-            throw sock_e;
+            throw SocketException("Connect to server failed!");
             return;
         }
         else
@@ -124,8 +124,7 @@ void SocketSender::readUnsendedFile(list<MatchedLogRec> & matched_log)
 #ifdef __DEBUG__
             cout<<"error:socket sender open file!"<<endl;
 #endif
-            SaveException read_e("Open file failed!");
-            throw read_e;
+            throw SaveException("Open file failed!");
             return;
         }
         else
@@ -139,20 +138,35 @@ void SocketSender::readUnsendedFile(list<MatchedLogRec> & matched_log)
         while (!fin.eof())
         {
             fin>>log;
-            if (fin.fail())
+            if (fin.fail()&&!fin.eof())
             {
-                if (!fin.eof())
-                {
-                    ReadException read_e("Read unsended log failed!");
-                    throw read_e;
-                    return;
-                }
+                throw ReadException("Read unsended log failed!");
+                return;
+
             }
             matched_log.push_front(log);
         }
 
         //close the file.
         fin.close();
+
+        //clean up the unsended log file.
+        char command[64]="./../script/cleanup_file.sh ";
+        int cleanup=system(strcat(command,unsended_file.c_str()));
+        if (cleanup<0)
+        {
+#ifdef __DEBUG__
+            cout<<"error:client clean up unsended log file!"<<endl;
+#endif
+            throw SaveException("Clean up unsended log file failed!");
+            return;
+        }
+        else
+        {
+#ifdef __DEBUG__
+            cout<<"ok:clean up unsended log file.";
+#endif
+        }
     } catch (exception const & e)
     {
         e.what();
@@ -182,8 +196,7 @@ void SocketSender::sendData(list<MatchedLogRec> & matched_log)
 #ifdef __DEBUG__
                 cout<<"error:client socket send failed!"<<endl;
 #endif
-                SendException send_e("Send data to server failed!");
-                throw send_e;
+                throw SendException("Send data to server failed!");
                 return;
             }
             else
@@ -212,28 +225,31 @@ void SocketSender::saveUnsendedFile(list<MatchedLogRec> & matched_log)
 {
     try
     {
+        //open file.
         ofstream fout(unsended_file.c_str(),ofstream::out);
         if (fout.fail())
         {
 #ifdef __DEBUG__
             cout<<"error:socket sender open file!"<<endl;
-#endif
-            SaveException save_e("Open file failed!");
-            throw save_e;
+#endif        
+            throw SaveException("Open file failed!");
             return;
         }
 
+        //write unsended log.
         for (list<MatchedLogRec>::const_iterator it=matched_log.begin();it!=matched_log.end();it++)
         {
             fout<<*it<<endl;
             if (fout.fail())
             {
-                SaveException save_e("Write unsended log failed!");
-                throw save_e;
+                throw SaveException("Write unsended log failed!");
                 return;
             }
         }
         fout.close();
+
+        //empty the matched log list.
+        matched_log.clear();
     } catch (exception const & e)
     {
         e.what();
