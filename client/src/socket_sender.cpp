@@ -58,7 +58,9 @@ void SocketSender::connectServer()
 #ifdef __DEBUG__
             cout<<"error:client fail to create socket!"<<endl;
 #endif
-            throw SocketException("Create socket failed!");
+            SocketException se("Create socket failed!");
+            SocketException & sock_e = se;
+            throw sock_e;
             return;
         }
         else
@@ -69,7 +71,7 @@ void SocketSender::connectServer()
         }
     } catch (exception const & e)
     {
-        cout<<e.what();
+        cout<<e.what()<<endl;
     }
 
     //server sockaddr info.
@@ -88,8 +90,9 @@ void SocketSender::connectServer()
 #ifdef __DEBUG__
             cout<<"error:client fail to connect to server!"<<endl;
 #endif
-            throw SocketException("Connect to server failed!");
-            return;
+            SocketException se("Connect to server failed!");
+            SocketException & sock_e = se;
+            throw sock_e;
         }
         else
         {
@@ -99,7 +102,7 @@ void SocketSender::connectServer()
         }
     } catch (exception const & e)
     {
-        cout<<e.what();
+        cout<<e.what()<<endl;
     }
 }
 
@@ -124,7 +127,9 @@ void SocketSender::readUnsendedFile(list<MatchedLogRec> & matched_log)
 #ifdef __DEBUG__
             cout<<"error:socket sender fail to open file!"<<endl;
 #endif
-            throw SaveException("Open file failed!");
+            SaveException se("Open file failed!");
+            SaveException & save_e = se;
+            throw save_e;
             return;
         }
         else
@@ -142,7 +147,9 @@ void SocketSender::readUnsendedFile(list<MatchedLogRec> & matched_log)
             {
                 if (!fin.eof())
                 {
-                    throw ReadException("Read unsended log failed!");
+                    ReadException re("Read unsended log failed!");
+                    ReadException & read_e = re;
+                    throw read_e;
                     return;
                 }
                 else
@@ -165,7 +172,9 @@ void SocketSender::readUnsendedFile(list<MatchedLogRec> & matched_log)
 #ifdef __DEBUG__
             cout<<"error:client fail to clean up unsended log file!"<<endl;
 #endif
-            throw SaveException("Clean up unsended log file failed!");
+            SaveException se("Clean up unsended log file failed!");
+            SaveException & save_e = se;
+            throw save_e;
             return;
         }
         else
@@ -176,7 +185,7 @@ void SocketSender::readUnsendedFile(list<MatchedLogRec> & matched_log)
         }
     } catch (exception const & e)
     {
-        cout<<e.what();
+        cout<<e.what()<<endl;
     }
 }
 
@@ -203,7 +212,9 @@ void SocketSender::sendData(list<MatchedLogRec> & matched_log)
 #ifdef __DEBUG__
                 cout<<"error:client socket fail to send data!"<<endl;
 #endif
-                throw SendException("Send data to server failed!");
+                SendException se("Send data to server failed!");
+                SendException & send_e = se;
+                throw send_e;
                 return;
             }
             else
@@ -216,7 +227,7 @@ void SocketSender::sendData(list<MatchedLogRec> & matched_log)
         }
     } catch (exception const & e)
     {
-        cout<<e.what();
+        cout<<e.what()<<endl;
     }
 }
 
@@ -240,7 +251,9 @@ void SocketSender::saveUnsendedFile(list<MatchedLogRec> & matched_log)
 #ifdef __DEBUG__
             cout<<"error:socket sender fail to open file!"<<endl;
 #endif        
-            throw SaveException("Open file failed!");
+            SaveException se("Open file failed!");
+            SaveException & save_e  = se;
+            throw save_e;
             return;
         }
 
@@ -250,7 +263,9 @@ void SocketSender::saveUnsendedFile(list<MatchedLogRec> & matched_log)
             fout<<*it<<endl;
             if (fout.fail())
             {
-                throw SaveException("Write unsended log failed!");
+                SaveException se("Write unsended log failed!");
+                SaveException & save_e = se;
+                throw save_e;
                 return;
             }
         }
@@ -260,7 +275,7 @@ void SocketSender::saveUnsendedFile(list<MatchedLogRec> & matched_log)
         matched_log.clear();
     } catch (exception const & e)
     {
-        cout<<e.what();
+        cout<<e.what()<<endl;
     }
 }
 
