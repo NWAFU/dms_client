@@ -11,5 +11,5 @@ void Client::dataMine()
     list<MatchedLogRec> & matched_log=log_reader.readLog();
     ConsoleSender console_sender;
     console_sender.sendLog(matched_log);
-    //log_sender.sendLog(matched_log);
+    log_sender.sendLog(matched_log);
 }
