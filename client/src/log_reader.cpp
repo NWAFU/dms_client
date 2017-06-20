@@ -307,5 +307,3 @@ list<MatchedLogRec>& LogReader::readLog()
     saveUnmatchedLogin();
     return matched_log_record;
 }
-
-
