@@ -8,7 +8,7 @@
 *输出参数：none
 *返回值：none
 **************************************************/
-SocketException::SocketException():ClientException("套接字异常")
+SocketException::SocketException():ClientException("Socket Exception")
 {
 }
 

@@ -8,7 +8,7 @@
 *输出参数：none
 *返回值：none
 **************************************************/
-BackupException::BackupException():ClientException("备份时异常")
+BackupException::BackupException():ClientException("Backup Exception")
 {
 }
 

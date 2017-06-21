@@ -8,7 +8,7 @@
 *输出参数：none
 *返回值：none
 **************************************************/
-ReadException::ReadException():ClientException("读取时异常")
+ReadException::ReadException():ClientException("Read Exception")
 {
 }
 
