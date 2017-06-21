@@ -8,7 +8,7 @@
 *输出参数：none
 *返回值：none
 **************************************************/
-SaveException::SaveException():ClientException("保存时异常")
+SaveException::SaveException():ClientException("Save Exception")
 {
 }
 
