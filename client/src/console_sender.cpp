@@ -2,12 +2,12 @@
 #include <iostream>
 
 using std::cout;
+using std::endl;
 
 void ConsoleSender::sendLog(list<MatchedLogRec> & matched_log)
 {
-    while (!matched_log.empty())
+    for (list<MatchedLogRec>::iterator it=matched_log.begin();it!=matched_log.end();it++)
     {
-        cout<<matched_log.front();
-        matched_log.pop_front();
+        cout<<*it<<endl;
     }
 }

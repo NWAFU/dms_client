@@ -61,7 +61,6 @@ void SocketSender::connectServer()
             SocketException se("Create socket failed!");
             SocketException & sock_e = se;
             throw sock_e;
-            return;
         }
         else
         {
@@ -130,7 +129,6 @@ void SocketSender::readUnsendedFile(list<MatchedLogRec> & matched_log)
             SaveException se("Open file failed!");
             SaveException & save_e = se;
             throw save_e;
-            return;
         }
         else
         {
@@ -150,7 +148,6 @@ void SocketSender::readUnsendedFile(list<MatchedLogRec> & matched_log)
                     ReadException re("Read unsended log failed!");
                     ReadException & read_e = re;
                     throw read_e;
-                    return;
                 }
                 else
                 {
@@ -175,7 +172,6 @@ void SocketSender::readUnsendedFile(list<MatchedLogRec> & matched_log)
             SaveException se("Clean up unsended log file failed!");
             SaveException & save_e = se;
             throw save_e;
-            return;
         }
         else
         {
@@ -215,7 +211,6 @@ void SocketSender::sendData(list<MatchedLogRec> & matched_log)
                 SendException se("Send data to server failed!");
                 SendException & send_e = se;
                 throw send_e;
-                return;
             }
             else
             {
@@ -254,7 +249,6 @@ void SocketSender::saveUnsendedFile(list<MatchedLogRec> & matched_log)
             SaveException se("Open file failed!");
             SaveException & save_e  = se;
             throw save_e;
-            return;
         }
 
         //write unsended log.
@@ -266,7 +260,6 @@ void SocketSender::saveUnsendedFile(list<MatchedLogRec> & matched_log)
                 SaveException se("Write unsended log failed!");
                 SaveException & save_e = se;
                 throw save_e;
-                return;
             }
         }
         fout.close();

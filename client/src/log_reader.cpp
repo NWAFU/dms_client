@@ -16,12 +16,13 @@ using std::ofstream;
 
 LogReader::LogReader()
 {
-
+    this->log_file="wtmpx";
+    this->unmatched_login_file="unmatched_login_file";
 }
 
-LogReader::LogReader(string backup_file, string unmatched_login_file)
+LogReader::LogReader(string log_file, string unmatched_login_file)
 {
-    this->backup_file=backup_file;
+    this->log_file=log_file;
     this->unmatched_login_file=unmatched_login_file;
 }
 
@@ -50,7 +51,17 @@ void LogReader::backup()
     int ret = WEXITSTATUS(status);
     if(ret == 1) cout<<"backup wrong!"<<endl;
     else if(ret == 2) cout<<"clear wrong!"<<endl;
-    else if(ret == 0) cout<<"backup success!"<<endl;
+    else if(ret == 0)
+    {
+        cout<<"backup success!"<<endl;
+        ifstream fin("name.txt");
+        if (!fin.is_open())
+        {
+            return;
+        }
+        fin>>backup_file;
+        fin.close();
+    }
 
 #ifdef _DEBUG
     cout << "backup end!......" << endl;
@@ -71,7 +82,6 @@ void LogReader::readUnmatchedFile()
         ifstream fin;
         int size;
         LogRec loginRec;
-        //unmatched_login_file = "/unmatched_login_file";
         pid_t pid;
         short type;
         int time;
@@ -87,7 +97,7 @@ void LogReader::readUnmatchedFile()
             cout << "File unmatched file size: " << size << endl;
         }
         //read unmatched file.
-        for(int i=0;i<(size/72);i++)
+        for(int i=0;i<(size/74);i++)
         {
             fin.seekg(0, ios::beg);
             fin.read(loginRec.log_name, 32);
@@ -125,7 +135,6 @@ void LogReader::readBackupFile()
     ifstream fin;
     long size;                      //binary file size.
     LogRec lr;                      //
-    backup_file = "/home/viki/dms_client/client/wtmpx.20170322103850";
 
     short type;
     pid_t pid;
@@ -222,7 +231,9 @@ void LogReader::match()
 
                 matched_log_record.push_back(matchedLogRec);
 
-                logout_record.erase(itor2);
+                itor1=logout_record.erase(itor1);
+                itor2=login_record.erase(itor2);
+                itor1--;
                 break;
             }
             else
@@ -264,7 +275,7 @@ void LogReader::saveUnmatchedLogin()
     short type;
     int time;
 
-    fout.open(unmatched_login_file.c_str(), ios::ate|ios::out|ios::binary);     //everytime clear this file.
+    fout.open(unmatched_login_file.c_str(), ios::trunc|ios::out|ios::binary);     //everytime clear this file.
     if(fout.fail())
     {
             cout << "open file error!" << endl;
@@ -278,7 +289,7 @@ void LogReader::saveUnmatchedLogin()
         type = loginRec.log_type;
         fout.write((char *)&type, 2);
         time = loginRec.log_time;
-        fout.write((char *)&time, 2);
+        fout.write((char *)&time, 4);
         fout.write(loginRec.log_ip, 32);
         itor++;
     }
@@ -307,5 +318,3 @@ list<MatchedLogRec>& LogReader::readLog()
     saveUnmatchedLogin();
     return matched_log_record;
 }
-
-
