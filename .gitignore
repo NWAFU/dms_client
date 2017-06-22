@@ -43,3 +43,6 @@ CMakeLists.txt.user*
 # unix log file
 wtmpx
 # End of https://www.gitignore.io/api/qt
+
+# temp file
+*~
