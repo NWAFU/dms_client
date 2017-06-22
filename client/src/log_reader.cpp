@@ -9,6 +9,7 @@
 #include "header/client_exception.h"
 #include "header/read_exception.h"
 #include "header/save_exception.h"
+#include "header/backup_exception.h"
 
 //#define _DEBUG 1
 
@@ -51,27 +52,30 @@ void LogReader::backup()
 #endif
     try
     {
+#ifdef _DEBUG
         char cmd[] = "../client/script/backup.sh wtmpx";
+#else
+        char cmd[] = "./script/backup.sh wtmpx";
+#endif
         int status = system(cmd);
         int ret = WEXITSTATUS(status);
         if(ret == 1)
         {
-            throw ClientException("backup fail");
+            throw BackupException("backup fail");
         }
         else if(ret == 2)
         {
-            throw ClientException("clean fail");
+            throw BackupException("clean fail");
         }
         else if(ret == 0)
         {
-            cout << "ok: backup success!" <<endl;
+            cout << "ok: backup is complete!" <<endl;
             ifstream fin("name.txt");
             if (!fin.is_open())
             {
                 return;
             }
             fin>>backup_file;
-            cout << backup_file << endl;
             fin.close();
         }
     }
@@ -136,7 +140,6 @@ void LogReader::readUnmatchedFile()
 
             login_record.push_back(loginRec);
         }
-
         fin.close();
     }
     catch (ClientException & e)
@@ -224,13 +227,13 @@ void LogReader::readBackupFile()
             }
 #endif
         }
+        cout << "ok: read date in the file is complete." << endl;
         fin.close();
     }
     catch(ClientException & e)
     {
         cout << e.what() << endl;
     }
-
 }
 
 /**************************************************
@@ -282,13 +285,14 @@ void LogReader::match()
                 {
                     if(login_record.empty())
                     {
-                        throw ReadException("Login file empty");
+                        throw ClientException("login_record empty");
                     }
                 }
                 iter2++;
             }
             iter1++;
         }
+        cout << "ok: date match is complete." << endl;
     }
     catch(ClientException & e)
     {
@@ -325,7 +329,7 @@ void LogReader::saveUnmatchedLogin()
         fout.open(unmatched_login_file.c_str(), ios::trunc|ios::out|ios::binary);     //everytime clear this file.
         if(fout.fail())
         {
-            throw ReadException("create unmatched login file fail");
+            throw SaveException("create unmatched login file fail");
         }
         while(itor != login_record.end())
         {
