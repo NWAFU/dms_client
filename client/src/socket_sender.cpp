@@ -128,7 +128,7 @@ void SocketSender::readUnsendedFile(list<MatchedLogRec> & matched_log)
 //#ifdef __DEBUG__
 //            cout<<"error:socket sender fail to open file!"<<endl;
 //#endif
-            throw SaveException("Open file failed");
+            throw ReadException("Open file failed");
         }
         else
         {
@@ -158,23 +158,6 @@ void SocketSender::readUnsendedFile(list<MatchedLogRec> & matched_log)
 
         //close the file.
         fin.close();
-
-        //clean up the unsended log file.
-        char command[64]="../client/script/cleanup_file.sh ";
-        int cleanup=system(strcat(command,unsended_file.c_str()));
-        if (cleanup<0)
-        {
-//#ifdef __DEBUG__
-//            cout<<"error:client fail to clean up unsended log file!"<<endl;
-//#endif
-            throw SaveException("Clean up unsended log file failed");
-        }
-        else
-        {
-#ifdef __DEBUG__
-            cout<<"ok:clean up unsended log file."<<endl;
-#endif
-        }
     } catch (ClientException & e)
     {
         cout<<e.what()<<endl;
@@ -198,6 +181,9 @@ void SocketSender::sendData(list<MatchedLogRec> & matched_log)
         int send_num;
         for (list<MatchedLogRec>::iterator it=matched_log.begin();it!=matched_log.end();)
         {
+#ifdef __DEBUG__
+            sleep(1);
+#endif
             send_num=send(socket_fd,(void *)&(*it),sizeof(MatchedLogRec),0);
             if (send_num<0)
             {
@@ -209,6 +195,7 @@ void SocketSender::sendData(list<MatchedLogRec> & matched_log)
             else
             {
 #ifdef __DEBUG__
+                cout<<*it<<endl;
                 cout<<"ok:client socket sended."<<endl;
 #endif
                 ++num_send_log;
@@ -236,7 +223,7 @@ void SocketSender::saveUnsendedFile(list<MatchedLogRec> & matched_log)
     try
     {
         //open file.
-        ofstream fout(unsended_file.c_str(),ofstream::out);
+        ofstream fout(unsended_file.c_str(),ofstream::out|ofstream::trunc);
         if (fout.fail())
         {
 //#ifdef __DEBUG__
