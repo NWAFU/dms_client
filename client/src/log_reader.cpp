@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <unistd.h>
+#include <time.h>
 #include <arpa/inet.h>
 
 #include "header/client_exception.h"
@@ -52,11 +53,17 @@ void LogReader::backup()
 #endif
     try
     {
+        time_t t = time(0);
+        char tmp[64];
+        char wtmpx[] ="wtmpx.";
+        strftime(tmp, sizeof(tmp), "%Y%m%d%H%M%S", localtime(&t));
+        backup_file = strcat(wtmpx, tmp);
 #ifdef _DEBUG
-        char cmd[] = "../client/script/backup.sh wtmpx";
+        char cmd[] = "../client/script/backup.sh wtmpx wtmpx.";
 #else
-        char cmd[] = "./script/backup.sh wtmpx";
+        char cmd[] = "./script/backup.sh wtmpx wtmpx.";
 #endif
+        strcat(cmd, tmp);
         int status = system(cmd);
         int ret = WEXITSTATUS(status);
         if(ret == 1)
@@ -70,13 +77,9 @@ void LogReader::backup()
         else if(ret == 0)
         {
             cout << "ok: backup is complete!" <<endl;
-            ifstream fin("name.txt");
-            if (!fin.is_open())
-            {
-                return;
-            }
-            fin>>backup_file;
-            fin.close();
+//            cout << tmp << endl;
+//            backup_file = strcat(wtmpx, tmp);
+//            cout << backup_file << endl;
         }
     }
     catch (ClientException &e)
@@ -289,6 +292,11 @@ void LogReader::match()
                     }
                 }
                 iter2++;
+            }
+            if(iter2 == login_record.end())
+            {
+                iter1 = logout_record.erase(iter1);
+                continue;
             }
             iter1++;
         }
