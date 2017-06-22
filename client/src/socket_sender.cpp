@@ -1,7 +1,6 @@
 #include "header/socket_sender.h"
 #include "header/data.h"
 
-//#include <linux/socket.h>//socket()
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>//sockaddr_in
@@ -16,9 +15,7 @@
 #include "header/socket_exception.h"
 #include "header/send_exception.h"
 
-#define __DEBUG__ 1
-#define SERVER_PORT 4096
-#define SERVER_IP_ADDRESS "127.0.0.1"
+//#define __DEBUG__
 
 using std::cout;
 using std::endl;
@@ -27,8 +24,26 @@ using std::ofstream;
 
 SocketSender::SocketSender()
 {
-    this->server_ip=SERVER_IP_ADDRESS;
-    this->server_port=SERVER_PORT;
+    try
+    {
+        cout<<"Start to read ./config/sockaddr_info.txt configure file..."<<endl;
+#ifdef __DEBUG__
+        ifstream fin("../client/config/sockaddr_info.txt",ifstream::in);
+#else
+        ifstream fin("./config/sockaddr_info.txt",ifstream::in);
+#endif
+        if (!fin.is_open())
+        {
+            throw ReadException("Open ./config/sockaddr_info.txt failed");
+        }
+        fin>>this->server_ip;
+        fin>>this->server_port;
+        fin.close();
+    } catch(ClientException & e)
+    {
+        cout<<e.what()<<endl;
+    }
+    cout<<"ok: read ./config/sockaddr_info.txt configure file finished."<<endl;
     this->unsended_file="unsended_matched_log.txt";
 }
 
@@ -51,16 +66,12 @@ void SocketSender::connectServer()
 {
     try
     {
+        cout<<"Start to connect to server..."<<endl;
+
         //create a socket for client.
         socket_fd=socket(AF_INET,SOCK_STREAM,0);
-//#ifdef __DEBUG__
-//        socket_fd=-1;
-//#endif
         if (socket_fd<0)
         {
-//#ifdef __DEBUG__
-//            cout<<"error:client fail to create socket!"<<endl;
-//#endif
            throw SocketException("Create socket failed");
         }
         else
@@ -85,21 +96,13 @@ void SocketSender::connectServer()
     {
         //create a connection request to server.
         int connet_fd=connect(socket_fd,(struct sockaddr *)&server_sockaddr,sizeof(struct sockaddr));
-//#ifdef __DEBUG__
-//        connet_fd=-1;
-//#endif
         if (connet_fd<0)
         {
-//#ifdef __DEBUG__
-//            cout<<"error:client fail to connect to server!"<<endl;
-//#endif
             throw SocketException("Connect to server failed");
         }
         else
         {
-#ifdef __DEBUG__
-            cout<<"ok:client connect to server."<<endl;
-#endif
+            cout<<"ok: connect to server."<<endl;
         }
     } catch (ClientException  & e)
     {
@@ -119,6 +122,7 @@ void SocketSender::connectServer()
 **************************************************/
 void SocketSender::readUnsendedFile(list<MatchedLogRec> & matched_log)
 {
+    cout<<"Start to read unsended matched log..."<<endl;
     try
     {
         //open the file storing unsended matched log.
@@ -133,7 +137,7 @@ void SocketSender::readUnsendedFile(list<MatchedLogRec> & matched_log)
         else
         {
 #ifdef __DEBUG__
-            cout<<"ok:socket sender open file."<<endl;
+            cout<<"ok:open \"unsended_matched_log\" file."<<endl;
 #endif
         }
         //read the matched log and insert into the matched_log list.
@@ -162,6 +166,7 @@ void SocketSender::readUnsendedFile(list<MatchedLogRec> & matched_log)
     {
         cout<<e.what()<<endl;
     }
+    cout<<"ok:read unsended matched log finished."<<endl;
 }
 
 /**************************************************
