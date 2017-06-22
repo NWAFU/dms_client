@@ -8,7 +8,7 @@
 *输出参数：none
 *返回值：none
 **************************************************/
-SendException::SendException():ClientException("发送时异常")
+SendException::SendException():ClientException("Send Exception")
 {
 }
 

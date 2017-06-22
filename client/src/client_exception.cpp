@@ -10,7 +10,7 @@
 **************************************************/
 ClientException::ClientException()
 {
-    this -> msg = "客户机异常!";
+    this -> msg = "Client Exception!";
 }
 
 /**************************************************
@@ -23,7 +23,7 @@ ClientException::ClientException()
 **************************************************/
 ClientException::ClientException(const string& msg)
 {
-    this -> msg = "客户端异常————";
+    this -> msg = "Client Exception----";
     this -> msg += msg;
     this -> msg += "!";
 }
