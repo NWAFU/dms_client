@@ -46,3 +46,4 @@ wtmpx
 
 # temp file
 *~
+*.swp
