@@ -15,7 +15,7 @@
 #include "header/socket_exception.h"
 #include "header/send_exception.h"
 
-//#define __DEBUG__
+#define _DEBUG
 
 using std::cout;
 using std::endl;
@@ -27,7 +27,7 @@ SocketSender::SocketSender()
     try
     {
         cout<<"Start to read ./config/sockaddr_info.txt configure file..."<<endl;
-#ifdef __DEBUG__
+#ifdef _DEBUG
         ifstream fin("../client/config/sockaddr_info.txt",ifstream::in);
 #else
         ifstream fin("./config/sockaddr_info.txt",ifstream::in);
@@ -76,7 +76,7 @@ void SocketSender::connectServer()
         }
         else
         {
-#ifdef __DEBUG__
+#ifdef _DEBUG
             cout<<"ok:client create socket."<<endl;
 #endif
         }
@@ -129,14 +129,14 @@ void SocketSender::readUnsendedFile(list<MatchedLogRec> & matched_log)
         ifstream fin(unsended_file.c_str(),ifstream::in);
         if (fin.fail())
         {
-//#ifdef __DEBUG__
+//#ifdef _DEBUG
 //            cout<<"error:socket sender fail to open file!"<<endl;
 //#endif
             throw ReadException("Open file failed");
         }
         else
         {
-#ifdef __DEBUG__
+#ifdef _DEBUG
             cout<<"ok:open \"unsended_matched_log\" file."<<endl;
 #endif
         }
@@ -186,20 +186,20 @@ void SocketSender::sendData(list<MatchedLogRec> & matched_log)
         int send_num;
         for (list<MatchedLogRec>::iterator it=matched_log.begin();it!=matched_log.end();)
         {
-#ifdef __DEBUG__
+#ifdef _DEBUG
             sleep(1);
 #endif
             send_num=send(socket_fd,(void *)&(*it),sizeof(MatchedLogRec),0);
             if (send_num<0)
             {
-//#ifdef __DEBUG__
+//#ifdef _DEBUG
 //                cout<<"error:client socket fail to send data!"<<endl;
 //#endif
                 throw SendException("Send data to server failed");
             }
             else
             {
-#ifdef __DEBUG__
+#ifdef _DEBUG
                 cout<<*it<<endl;
                 cout<<"ok:client socket sended."<<endl;
 #endif
@@ -231,7 +231,7 @@ void SocketSender::saveUnsendedFile(list<MatchedLogRec> & matched_log)
         ofstream fout(unsended_file.c_str(),ofstream::out|ofstream::trunc);
         if (fout.fail())
         {
-//#ifdef __DEBUG__
+//#ifdef _DEBUG
 //            cout<<"error:socket sender fail to open file!"<<endl;
 //#endif
             throw SaveException("Open file failed");
