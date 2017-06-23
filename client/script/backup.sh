@@ -1,11 +1,9 @@
 #!/bin/bash
 
-time=$(date "+%Y%m%d%H%M%S")
-if cp $1 $1.$time
+if cp $1 $2
 then
 	if cat /dev/null > $1	
 	then
-		echo $1.$time > name.txt	
 		exit 0
 	else
 		exit 2
