@@ -6,9 +6,10 @@ using namespace std;
 int main()
 {
     LogReader log_reader;
-    SocketSender sock_sender;
-    SocketSender & sock_s=sock_sender;
-    Client client(log_reader,sock_s);
-    client.dataMine();
+//    SocketSender sock_sender;
+//    SocketSender & sock_s=sock_sender;
+//    Client client(log_reader,sock_s);
+//    client.dataMine();
+    log_reader.readLog();
     return 0;
 }
