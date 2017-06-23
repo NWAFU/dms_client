@@ -12,7 +12,7 @@
 #include "header/save_exception.h"
 #include "header/backup_exception.h"
 
-//#define _DEBUG
+#define _DEBUG
 
 using std::cout;
 using std::endl;
