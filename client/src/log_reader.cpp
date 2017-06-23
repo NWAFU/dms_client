@@ -12,7 +12,7 @@
 #include "header/save_exception.h"
 #include "header/backup_exception.h"
 
-#define _DEBUG 1
+#define _DEBUG
 
 using std::cout;
 using std::endl;
@@ -54,14 +54,14 @@ void LogReader::backup()
     try
     {
         time_t t = time(0);
-        char tmp[64];
-        char wtmpx[] ="wtmpx.";
+        char tmp[16];           //time
+        char wtmpx[24] ="wtmpx.";
         strftime(tmp, sizeof(tmp), "%Y%m%d%H%M%S", localtime(&t));
-        backup_file = strcat(wtmpx, tmp);
+        backup_file = strcat(wtmpx, tmp);           //The size of the first argument must be greater than the size of the merged parameter.
 #ifdef _DEBUG
-        char cmd[] = "../client/script/backup.sh wtmpx wtmpx.";
+        char cmd[64] = "../client/script/backup.sh wtmpx wtmpx.";
 #else
-        char cmd[] = "./script/backup.sh wtmpx wtmpx.";
+        char cmd[64] = "./script/backup.sh wtmpx wtmpx.";
 #endif
         strcat(cmd, tmp);
         int status = system(cmd);
@@ -77,9 +77,6 @@ void LogReader::backup()
         else if(ret == 0)
         {
             cout << "ok: backup is complete!" <<endl;
-//            cout << tmp << endl;
-//            backup_file = strcat(wtmpx, tmp);
-//            cout << backup_file << endl;
         }
     }
     catch (ClientException &e)
@@ -293,7 +290,7 @@ void LogReader::match()
                 }
                 iter2++;
             }
-            if(iter2 == login_record.end())
+            if(iter2 == login_record.end())         //If there is no login log and logout match, leave the logout record.
             {
                 iter1 = logout_record.erase(iter1);
                 continue;
