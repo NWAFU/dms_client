@@ -75,7 +75,7 @@ void LogReader::backup()
         }
         else if(ret == 0)
         {
-            cout << "Ok: backup finished." <<endl;
+            cout << "OK:backup finished." <<endl;
         }
     }
     catch (ClientException &e)
@@ -223,7 +223,7 @@ void LogReader::readBackupFile()
             }
 #endif
         }
-        cout << "Ok: read data in the file finished." << endl;
+        cout << "OK:read data in the file finished." << endl;
         cout << "Login number: " << login_record.size() << endl;
         cout << "Logout number: " << logout_record.size() << endl;
 
@@ -297,7 +297,7 @@ void LogReader::match()
             }
             iter1++;
         }
-        cout << "Ok: data match finished." << endl;
+        cout << "OK:data match finished." << endl;
         cout << "Matched record number: " << matched_log_record.size() << endl;
     }
     catch(ClientException & e)
@@ -354,7 +354,7 @@ void LogReader::saveUnmatchedLogin()
         }
         fout.close();
         login_record.clear();       //clear this list.
-        cout << "Ok: save unmatched login file finished." << endl;
+        cout << "OK:save unmatched login file finished." << endl;
     }
     catch(ClientException & e)
     {
