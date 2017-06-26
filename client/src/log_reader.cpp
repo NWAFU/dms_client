@@ -203,7 +203,6 @@ void LogReader::readBackupFile()
             if(type ==7)
             {
                 login_record.push_back(log_rec);
-                count_login_rec++;
 #ifdef _DEBUG
                 cout << "login pushed" << endl;
 #endif
@@ -211,7 +210,6 @@ void LogReader::readBackupFile()
             else if(type == 8)
             {
                 logout_record.push_back(log_rec);
-                count_logout_rec++;
 #ifdef _DEBUG
                 cout << "logout pushed" << endl;
 #endif
