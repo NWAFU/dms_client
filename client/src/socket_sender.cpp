@@ -75,7 +75,7 @@ void SocketSender::connectServer()
         socket_fd=socket(AF_INET,SOCK_STREAM,0);
         if (socket_fd<0)
         {
-           throw SocketException("Create socket failed");
+            throw SocketException("Create socket failed");
         }
         else
         {
@@ -83,20 +83,14 @@ void SocketSender::connectServer()
             cout<<"OK:client create socket."<<endl;
 #endif
         }
-    } catch (ClientException & e)
-    {
-        cout<<e.what()<<endl;
-    }
 
-    //server sockaddr info.
-    sockaddr_in server_sockaddr;
-    memset(&server_sockaddr,0,sizeof(sockaddr_in));
-    server_sockaddr.sin_family=AF_INET;
-    server_sockaddr.sin_addr.s_addr=inet_addr(server_ip.c_str());
-    server_sockaddr.sin_port=htons(server_port);
+        //server sockaddr info.
+        sockaddr_in server_sockaddr;
+        memset(&server_sockaddr,0,sizeof(sockaddr_in));
+        server_sockaddr.sin_family=AF_INET;
+        server_sockaddr.sin_addr.s_addr=inet_addr(server_ip.c_str());
+        server_sockaddr.sin_port=htons(server_port);
 
-    try
-    {
         //create a connection request to server.
         int connet_fd=connect(socket_fd,(struct sockaddr *)&server_sockaddr,sizeof(struct sockaddr));
         if (connet_fd<0)
@@ -115,6 +109,7 @@ void SocketSender::connectServer()
     } catch (ClientException  & e)
     {
         cout<<e.what()<<endl;
+        exit(1);
     }
 }
 
@@ -172,6 +167,7 @@ void SocketSender::readUnsendedFile(list<MatchedLogRec> & matched_log)
     } catch (ClientException & e)
     {
         cout<<e.what()<<endl;
+        exit(-1);
     }
 }
 
@@ -186,10 +182,10 @@ void SocketSender::readUnsendedFile(list<MatchedLogRec> & matched_log)
 **************************************************/
 void SocketSender::sendData(list<MatchedLogRec> & matched_log)
 {
+    int num_send_log=0;
     try
     {
         cout<<"Starting to send data to server..."<<endl;
-        int num_send_log=0;
         int send_num;
         for (list<MatchedLogRec>::iterator it=matched_log.begin();it!=matched_log.end();)
         {
@@ -216,6 +212,8 @@ void SocketSender::sendData(list<MatchedLogRec> & matched_log)
     } catch (ClientException & e)
     {
         cout<<e.what()<<endl;
+        cout<<"Total number of sended matched log: "<<num_send_log<<endl;
+        exit(-1);
     }
 }
 
