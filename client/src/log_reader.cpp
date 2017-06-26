@@ -115,10 +115,6 @@ void LogReader::readUnmatchedFile()
             fin.seekg(0, ios::end);
             size = fin.tellg();
         }
-        if(size == 0)
-        {
-            cout << "unmatched file is empty." << endl;
-        }
         //read unmatched file.
         for(int i=0;i<(size/74);i++)
         {
@@ -167,8 +163,6 @@ void LogReader::readBackupFile()
         short type;
         pid_t pid;
         int time;
-        int count_login_rec = 0;
-        int count_logout_rec = 0;
         fin.open(backup_file.c_str(), ios::in|ios::binary);
         if (fin.fail())
         {
