@@ -11,6 +11,5 @@ int main()
     Client client(log_reader,sock_s);
     client.dataMine();
 
-    printf("hello !");
     return 0;
 }
