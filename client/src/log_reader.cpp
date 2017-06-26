@@ -12,7 +12,7 @@
 #include "header/save_exception.h"
 #include "header/backup_exception.h"
 
-#define _DEBUG
+//#define _DEBUG
 
 using std::cout;
 using std::endl;
@@ -48,13 +48,11 @@ LogReader::~LogReader()
 **************************************************/
 void LogReader::backup()
 {
-#ifdef _DEBUG
-    cout << "backup start!......" << endl;
-#endif
+    cout << "starting to backup..." << endl;
     try
     {
         time_t t = time(0);
-        char tmp[16];           //time
+        char tmp[16] = {0};           //time
         char wtmpx[24] ="wtmpx.";
         strftime(tmp, sizeof(tmp), "%Y%m%d%H%M%S", localtime(&t));
         backup_file = strcat(wtmpx, tmp);           //The size of the first argument must be greater than the size of the merged parameter.
@@ -68,25 +66,22 @@ void LogReader::backup()
         int ret = WEXITSTATUS(status);
         if(ret == 1)
         {
-            throw BackupException("backup fail");
+            throw BackupException("backup failed");
+            exit(1);
         }
         else if(ret == 2)
         {
-            throw BackupException("clean fail");
+            throw BackupException("clean failed");
         }
         else if(ret == 0)
         {
-            cout << "ok: backup is complete!" <<endl;
+            cout << "ok: backup finished." <<endl;
         }
     }
     catch (ClientException &e)
     {
         cout << e.what() << endl;
     }
-
-#ifdef _DEBUG
-    cout << "backup end!......" << endl;
-#endif
 }
 
 /**************************************************
@@ -100,45 +95,44 @@ void LogReader::backup()
 **************************************************/
 void LogReader::readUnmatchedFile()
 {
+    cout << "starting to read data..." << endl;
     try
     {
         ifstream fin;
         int size;
-        LogRec loginRec;
+        LogRec login_rec;
         pid_t pid;
         short type;
         int time;
         fin.open(unmatched_login_file.c_str(), ios::in|ios::binary);
         if(fin.fail())
         {
-            throw ReadException("unmatched login file read fail");
+            throw ReadException("read unmatched login file failed");
+            exit(1);
         }
         else
         {
             fin.seekg(0, ios::end);
             size = fin.tellg();
-#ifdef  _DEBUG
-            cout << "File unmatched file size: " << size << endl;
-#endif
         }
         //read unmatched file.
         for(int i=0;i<(size/74);i++)
         {
             fin.seekg(0, ios::beg);
-            fin.read(loginRec.log_name, 32);
+            fin.read(login_rec.log_name, 32);
 
             fin.read((char *)&pid, 4);
-            loginRec.pid = pid;
+            login_rec.pid = pid;
 
             fin.read((char *)&type, 2);
-            loginRec.log_type = type;
+            login_rec.log_type = type;
 
             fin.read((char *)&time, 4);
-            loginRec.log_time = time;
+            login_rec.log_time = time;
 
-            fin.read(loginRec.log_ip, 32);
+            fin.read(login_rec.log_ip, 32);
 
-            login_record.push_back(loginRec);
+            login_record.push_back(login_rec);
         }
         fin.close();
     }
@@ -146,7 +140,6 @@ void LogReader::readUnmatchedFile()
     {
         cout << e.what() << endl;
     }
-
 }
 
 
@@ -166,7 +159,7 @@ void LogReader::readBackupFile()
     {
         ifstream fin;
         long size;
-        LogRec lr;
+        LogRec log_rec;
         short type;
         pid_t pid;
         int time;
@@ -174,6 +167,7 @@ void LogReader::readBackupFile()
         if (fin.fail())
         {
             throw ReadException("read backup file failed");
+            exit(1);
         }
         else
         {
@@ -187,35 +181,37 @@ void LogReader::readBackupFile()
         for(int begin = 0;begin < size;begin += 372)
         {
             fin.seekg(begin, ios::beg);
-            fin.read(lr.log_name, 32);
+            fin.read(log_rec.log_name, 32);
 
             fin.seekg(36, ios::cur);
             fin.read((char *)&pid, 4);
             pid = ntohl(pid);
-            lr.pid = pid;
+            log_rec.pid = pid;
 
             fin.read((char *)&type, 2);
             type = ntohs(type);
-            lr.log_type = type;
+            log_rec.log_type = type;
 
             fin.seekg(6, ios::cur);
             fin.read((char *)&time, 4);
             time = ntohl(time);
-            lr.log_time = time;
+            log_rec.log_time = time;
 
             fin.seekg(30, ios::cur);
-            fin.read(lr.log_ip, 32);
+            fin.read(log_rec.log_ip, 32);
 
             if(type ==7)
             {
-                login_record.push_back(lr);
+                login_record.push_back(log_rec);
+                count_login_rec++;
 #ifdef _DEBUG
                 cout << "login pushed" << endl;
 #endif
             }
             else if(type == 8)
             {
-                logout_record.push_back(lr);
+                logout_record.push_back(log_rec);
+                count_logout_rec++;
 #ifdef _DEBUG
                 cout << "logout pushed" << endl;
 #endif
@@ -227,7 +223,10 @@ void LogReader::readBackupFile()
             }
 #endif
         }
-        cout << "ok: read date in the file is complete." << endl;
+        cout << "ok: read data in the file finished." << endl;
+        cout << "login number: " << login_record.size() << endl;
+        cout << "logout number: " << logout_record.size() << endl;
+
         fin.close();
     }
     catch(ClientException & e)
@@ -248,33 +247,34 @@ void LogReader::readBackupFile()
 
 void LogReader::match()
 {
+    cout << "starting to data match..." << endl;
     try
     {
-        LogRec logoutRec;
-        LogRec loginRec;
-        MatchedLogRec matchedLogRec;
+        LogRec logout_rec;
+        LogRec login_rec;
+        MatchedLogRec matched_log_rec;
         list<LogRec>::iterator iter1;       //logout iterator
         list<LogRec>::iterator iter2;       //login iterator
         iter1 = logout_record.begin();
         while(iter1 != logout_record.end())
         {
-            logoutRec = *iter1;
+            logout_rec = *iter1;
             iter2 = login_record.begin();
             while(iter2 != login_record.end())
             {
-                loginRec = *iter2;
-                if(strcmp(loginRec.log_name, logoutRec.log_name) == 0 &&
-                        loginRec.pid == logoutRec.pid &&
-                        strcmp(loginRec.log_ip, logoutRec.log_ip) == 0)
+                login_rec = *iter2;
+                if(strcmp(login_rec.log_name, logout_rec.log_name) == 0 &&
+                        login_rec.pid == logout_rec.pid &&
+                        strcmp(login_rec.log_ip, logout_rec.log_ip) == 0)
                 {
-                    strcpy(matchedLogRec.log_name, logoutRec.log_name);
-                    matchedLogRec.pid = logoutRec.pid;
-                    matchedLogRec.login_time = loginRec.log_time;
-                    matchedLogRec.logout_time = logoutRec.log_time;
-                    matchedLogRec.duration = matchedLogRec.logout_time - matchedLogRec.login_time;
-                    strcpy(matchedLogRec.log_ip, logoutRec.log_ip);
+                    strcpy(matched_log_rec.log_name, logout_rec.log_name);
+                    matched_log_rec.pid = logout_rec.pid;
+                    matched_log_rec.login_time = login_rec.log_time;
+                    matched_log_rec.logout_time = logout_rec.log_time;
+                    matched_log_rec.duration = matched_log_rec.logout_time - matched_log_rec.login_time;
+                    strcpy(matched_log_rec.log_ip, logout_rec.log_ip);
 
-                    matched_log_record.push_back(matchedLogRec);
+                    matched_log_record.push_back(matched_log_rec);
 
                     iter1=logout_record.erase(iter1);
                     iter2=login_record.erase(iter2);
@@ -285,7 +285,7 @@ void LogReader::match()
                 {
                     if(login_record.empty())
                     {
-                        throw ClientException("login_record empty");
+                        throw ClientException("login_record empty cause match failed");
                     }
                 }
                 iter2++;
@@ -297,7 +297,8 @@ void LogReader::match()
             }
             iter1++;
         }
-        cout << "ok: date match is complete." << endl;
+        cout << "ok: data match finished." << endl;
+        cout << "matched record number: " << matched_log_record.size() << endl;
     }
     catch(ClientException & e)
     {
@@ -317,14 +318,15 @@ void LogReader::match()
 
 void LogReader::saveUnmatchedLogin()
 {
+    cout << "starting to save unmatched login file..." << endl;
     try
     {
         if(login_record.empty())
         {
-            throw SaveException("don't have unmatched login");
+            throw SaveException("unmatched_login_rec empty cause save unmatched login file failed");
         }
         ofstream fout;
-        LogRec loginRec;
+        LogRec login_rec;
         list<LogRec>::iterator itor;
         itor = login_record.begin();
         pid_t pid;
@@ -334,23 +336,25 @@ void LogReader::saveUnmatchedLogin()
         fout.open(unmatched_login_file.c_str(), ios::trunc|ios::out|ios::binary);     //everytime clear this file.
         if(fout.fail())
         {
-            throw SaveException("create unmatched login file fail");
+            throw SaveException("create unmatched login file failed");
+            exit(1);
         }
         while(itor != login_record.end())
         {
-            loginRec = *itor;
-            fout.write(loginRec.log_name, 32);
-            pid = loginRec.pid;
+            login_rec = *itor;
+            fout.write(login_rec.log_name, 32);
+            pid = login_rec.pid;
             fout.write((char *)&pid, 4);
-            type = loginRec.log_type;
+            type = login_rec.log_type;
             fout.write((char *)&type, 2);
-            time = loginRec.log_time;
+            time = login_rec.log_time;
             fout.write((char *)&time, 4);
-            fout.write(loginRec.log_ip, 32);
+            fout.write(login_rec.log_ip, 32);
             itor++;
         }
         fout.close();
         login_record.clear();       //clear this list.
+        cout << "ok: save unmatched login file finished." << endl;
     }
     catch(ClientException & e)
     {
