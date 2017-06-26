@@ -2,6 +2,7 @@
 
 /**************************************************
 *作者：wu heng
+*日期：2017.06.10
 *函数名：SocketException()
 *功能：套接字异常类默认构造函数
 *输入参数：none
@@ -14,6 +15,7 @@ SocketException::SocketException():ClientException("Socket Exception")
 
 /**************************************************
 *作者：wu heng
+*日期：2017.06.10
 *函数名：SocketException(const string& msg)
 *功能：套接字异常类带参数构造函数
 *输入参数：msg
