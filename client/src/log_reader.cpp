@@ -48,7 +48,7 @@ LogReader::~LogReader()
 **************************************************/
 void LogReader::backup()
 {
-    cout << "starting to backup..." << endl;
+    cout << "Starting to backup..." << endl;
     try
     {
         time_t t = time(0);
@@ -66,16 +66,16 @@ void LogReader::backup()
         int ret = WEXITSTATUS(status);
         if(ret == 1)
         {
-            throw BackupException("backup failed");
+            throw BackupException("Backup failed");
             exit(1);
         }
         else if(ret == 2)
         {
-            throw BackupException("clean failed");
+            throw BackupException("Clean failed");
         }
         else if(ret == 0)
         {
-            cout << "ok: backup finished." <<endl;
+            cout << "Ok: backup finished." <<endl;
         }
     }
     catch (ClientException &e)
@@ -95,7 +95,7 @@ void LogReader::backup()
 **************************************************/
 void LogReader::readUnmatchedFile()
 {
-    cout << "starting to read data..." << endl;
+    cout << "Starting to read data..." << endl;
     try
     {
         ifstream fin;
@@ -107,7 +107,7 @@ void LogReader::readUnmatchedFile()
         fin.open(unmatched_login_file.c_str(), ios::in|ios::binary);
         if(fin.fail())
         {
-            throw ReadException("read unmatched login file failed");
+            throw ReadException("Read unmatched login file failed");
             exit(1);
         }
         else
@@ -166,7 +166,7 @@ void LogReader::readBackupFile()
         fin.open(backup_file.c_str(), ios::in|ios::binary);
         if (fin.fail())
         {
-            throw ReadException("read backup file failed");
+            throw ReadException("Read backup file failed");
             exit(1);
         }
         else
@@ -223,9 +223,9 @@ void LogReader::readBackupFile()
             }
 #endif
         }
-        cout << "ok: read data in the file finished." << endl;
-        cout << "login number: " << login_record.size() << endl;
-        cout << "logout number: " << logout_record.size() << endl;
+        cout << "Ok: read data in the file finished." << endl;
+        cout << "Login number: " << login_record.size() << endl;
+        cout << "Logout number: " << logout_record.size() << endl;
 
         fin.close();
     }
@@ -247,7 +247,7 @@ void LogReader::readBackupFile()
 
 void LogReader::match()
 {
-    cout << "starting to data match..." << endl;
+    cout << "Starting to data match..." << endl;
     try
     {
         LogRec logout_rec;
@@ -285,7 +285,7 @@ void LogReader::match()
                 {
                     if(login_record.empty())
                     {
-                        throw ClientException("login_record empty cause match failed");
+                        throw ClientException("Login_record empty cause match failed");
                     }
                 }
                 iter2++;
@@ -297,8 +297,8 @@ void LogReader::match()
             }
             iter1++;
         }
-        cout << "ok: data match finished." << endl;
-        cout << "matched record number: " << matched_log_record.size() << endl;
+        cout << "Ok: data match finished." << endl;
+        cout << "Matched record number: " << matched_log_record.size() << endl;
     }
     catch(ClientException & e)
     {
@@ -318,12 +318,12 @@ void LogReader::match()
 
 void LogReader::saveUnmatchedLogin()
 {
-    cout << "starting to save unmatched login file..." << endl;
+    cout << "Starting to save unmatched login file..." << endl;
     try
     {
         if(login_record.empty())
         {
-            throw SaveException("unmatched_login_rec empty cause save unmatched login file failed");
+            throw SaveException("Unmatched_login_rec empty cause save unmatched login file failed");
         }
         ofstream fout;
         LogRec login_rec;
@@ -336,7 +336,7 @@ void LogReader::saveUnmatchedLogin()
         fout.open(unmatched_login_file.c_str(), ios::trunc|ios::out|ios::binary);     //everytime clear this file.
         if(fout.fail())
         {
-            throw SaveException("create unmatched login file failed");
+            throw SaveException("Create unmatched login file failed");
             exit(1);
         }
         while(itor != login_record.end())
@@ -354,7 +354,7 @@ void LogReader::saveUnmatchedLogin()
         }
         fout.close();
         login_record.clear();       //clear this list.
-        cout << "ok: save unmatched login file finished." << endl;
+        cout << "Ok: save unmatched login file finished." << endl;
     }
     catch(ClientException & e)
     {
