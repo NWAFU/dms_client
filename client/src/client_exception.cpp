@@ -2,6 +2,7 @@
 
 /**************************************************
 *作者：wu heng
+*日期：2017.06.10
 *函数名：ClientException()
 *功能：客户端异常类默认构造函数
 *输入参数：none
@@ -15,6 +16,7 @@ ClientException::ClientException()
 
 /**************************************************
 *作者：wu heng
+*日期：2017.06.10
 *函数名：ClientException(const string& msg)
 *功能：客户端异常类带参数构造函数
 *输入参数：msg
@@ -32,6 +34,7 @@ ClientException::~ClientException() throw(){}
 
 /**************************************************
 *作者：wu heng
+*日期：2017.06.10
 *函数名：const char* what()
 *功能：返回客户端异常类错误字符串msg
 *输入参数：none

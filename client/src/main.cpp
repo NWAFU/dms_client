@@ -10,5 +10,6 @@ int main()
     SocketSender & sock_s=sock_sender;
     Client client(log_reader,sock_s);
     client.dataMine();
+
     return 0;
 }
