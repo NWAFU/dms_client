@@ -41,7 +41,7 @@ LogReader::~LogReader()
 *作者：Yang Xiaotian
 *日期：2017.06.14
 *函数名：backup
-*功能：Read the total dispatch function of the log file to get a matched collection
+*功能：Backup the log file, the original log file backup as a suffix of the file.
 *输入参数：The original log file that needs to be backed up is fixed and does not need to be imported
 *输出参数：return 1,backup wrong;return 2,clear wrong;return 0,correct
 *返回值：none
@@ -95,7 +95,7 @@ void LogReader::backup()
 **************************************************/
 void LogReader::readUnmatchedFile()
 {
-    cout << "Starting to read data..." << endl;
+    cout << "Starting to read unmatched login file..." << endl;
     try
     {
         ifstream fin;
@@ -135,6 +135,8 @@ void LogReader::readUnmatchedFile()
             login_record.push_back(login_rec);
         }
         fin.close();
+        cout << "Unmatched login number: " << login_record.size() << endl;
+        cout << "OK:read unmatched login file finished" << endl;
     }
     catch (ClientException & e)
     {
@@ -155,6 +157,7 @@ void LogReader::readUnmatchedFile()
 
 void LogReader::readBackupFile()
 {
+    cout << "Starting to read backup file..." << endl;
     try
     {
         ifstream fin;
@@ -347,6 +350,7 @@ void LogReader::saveUnmatchedLogin()
             itor++;
         }
         fout.close();
+        cout << "Save unmatched login number: " << login_record.size() << endl;
         login_record.clear();       //clear this list.
         cout << "OK:save unmatched login file finished." << endl;
     }
@@ -360,7 +364,7 @@ void LogReader::saveUnmatchedLogin()
 *作者：Yang Xiaotian
 *日期：2017.06.14
 *函数名：readLog
-*功能：Read the total dispatch function of the log file
+*功能：Read the total dispatch function of the log file to get a matched collection
 *输入参数：No parameters, the need to back up the original log file, need to read the unmatched login log file path is fixed, so do not need to pass
 *输出参数：void
 *返回值：list<MatchedLogRec>& Will return a good set of login records, and later passed to the data sending module
