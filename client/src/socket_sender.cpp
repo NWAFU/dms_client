@@ -16,7 +16,7 @@
 #include "header/send_exception.h"
 
 //#define _DEBUG
-#define _TEST
+//#define _TEST
 
 using std::cout;
 using std::endl;
@@ -162,7 +162,9 @@ void SocketSender::readUnsendedFile(list<MatchedLogRec> & matched_log)
 
             }
             matched_log.push_back(log);
+#ifdef _TEST
             ++num_read;
+#endif
         }
 
         //close the file.
@@ -260,7 +262,9 @@ void SocketSender::saveUnsendedFile(list<MatchedLogRec> & matched_log)
             {
                 throw SaveException("Write unsended log failed!");
             }
+#ifdef _TEST
             ++num_save;
+#endif
         }
         fout.close();
 
@@ -292,27 +296,28 @@ void SocketSender::sendLog(list<MatchedLogRec> & matched_log)
     connectServer();
 #ifdef _TEST
     cout<<endl;
-    cout<<"Before read unsended matched log file:"<<endl;
-    cout<<"Number of matched log:"<<matched_log.size()<<endl;
+    cout<<"Before read unsended matched log file--"
+       <<"matched_log.size():"<<matched_log.size()<<endl;
 #endif
     readUnsendedFile(matched_log);
 #ifdef _TEST
-    cout<<"After read unsended matched log file:"<<endl;
-    cout<<"Number of matched log:"<<matched_log.size()<<endl;
+    cout<<"After read unsended matched log file--"
+       <<"matched_log.size():"<<matched_log.size()<<endl;
     cout<<endl;
-    cout<<"Before send data to server:"<<endl;
-    cout<<"Number of matched log:"<<matched_log.size()<<endl;
+    cout<<"Before send data to server--"
+       <<"matched_log.size():"<<matched_log.size()<<endl;
 #endif
     sendData(matched_log);
 #ifdef _TEST
-    cout<<"After send data to server:"<<endl;
-    cout<<"Number of matched log:"<<endl;
+    cout<<"After send data to server--"
+       <<"matched_log.size():"<<matched_log.size()<<endl;
     cout<<endl;
-    cout<<"Before save unsended matched log into file:"<<endl;
-    cout<<"Number of matched log:"<<matched_log.size()<<endl;
+    cout<<"Before save unsended matched log into file--"
+       <<"matched_log.size():"<<matched_log.size()<<endl;
 #endif
     saveUnsendedFile(matched_log);
 #ifdef _TEST
-    cout<<"After save unsended matched log into file:"<<endl;
+    cout<<"After save unsended matched log into file--"
+       <<"matched_log.size():"<<matched_log.size()<<endl;
 #endif
 }
