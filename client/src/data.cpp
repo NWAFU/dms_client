@@ -36,17 +36,18 @@ ifstream & operator>>(ifstream & fin,MatchedLogRec & matched_log)
 **************************************************/
 ofstream & operator <<(ofstream & fout,MatchedLogRec const & matched_log)
 {
-    fout<<matched_log.log_name;
-    fout<<" ";
-    fout<<matched_log.pid;
-    fout<<" ";
-    fout<<matched_log.login_time;
-    fout<<" ";
-    fout<<matched_log.logout_time;
-    fout<<" ";
-    fout<<matched_log.duration;
-    fout<<" ";
-    fout<<matched_log.log_ip;
+    fout<<matched_log.log_name<<"\t";
+    //fout<<" ";
+    fout<<matched_log.pid<<"\t";
+    //fout<<" ";
+    fout<<matched_log.login_time<<"\t\t";
+    //fout<<" ";
+    fout<<matched_log.logout_time<<"\t\t";
+    //fout<<" ";
+    fout<<matched_log.duration<<"\t\t";
+    //fout<<" ";
+    fout<<matched_log.log_ip<<"\t\t";
+    return fout;
     return fout;
 }
 
