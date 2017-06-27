@@ -319,10 +319,6 @@ void LogReader::saveUnmatchedLogin()
     cout << "Starting to save unmatched login file..." << endl;
     try
     {
-        if(login_record.empty())
-        {
-            throw SaveException("Unmatched_login_rec empty cause save unmatched login file failed");
-        }
         ofstream fout;
         LogRec login_rec;
         list<LogRec>::iterator itor;
