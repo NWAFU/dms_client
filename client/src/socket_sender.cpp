@@ -224,7 +224,6 @@ void SocketSender::sendData(list<MatchedLogRec> & matched_log)
     {
         cout<<e.what()<<endl;
         cout<<"Total number of sended matched log: "<<num_send_log<<endl;
-        exit(-1);
     }
 }
 
